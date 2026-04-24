@@ -1,0 +1,712 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-9"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SMART LOCAL STORES</title>
+<link rel="icon" type="image/svg+xml" href="sl-favicon.svg">
+<link rel="shortcut icon" href="sl-favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="landing-homepage">
+
+<div id="sl-preloader" class="sl-preloader" data-started-at="">
+  <div class="sl-preloader-ring" aria-hidden="true">
+    <div class="sl-preloader-mark">
+      <span class="sl-preloader-letter sl-preloader-letter-s">S</span>
+      <span class="sl-preloader-letter sl-preloader-letter-l">L</span>
+    </div>
+  </div>
+</div>
+
+<div class="bg-grid"></div>
+<div class="bg-orbs">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+</div>
+
+<!-- NAV -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand logo" href="index.html">Smart<span>Local</span></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav mx-auto">
+        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="#plans">Plans</a></li>
+        <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- HOME -->
+<section id="home" class="premium-home">
+  <div class="container">
+    <div class="premium-home-shell">
+      <div class="premium-home-slider" id="homepage-hero-shell" aria-label="SL Stores premium homepage slider">
+        <div class="premium-home-slider-stage">
+          <article class="premium-home-slide slide-operations is-active" data-slide-index="0">
+            <div class="premium-slide-copy">
+              <span class="premium-slide-eyebrow">SL Stores Business Portal</span>
+              <h1>Run your store from one clean command center.</h1>
+              <p>Orders, invoices, courier flow, complaints, and live admin work in one premium workspace that stays simple and fast.</p>
+              <div class="premium-slide-pills" aria-label="Key highlights">
+                <span>Orders to invoice</span>
+                <span>Auto dispatch</span>
+                <span>MongoDB live</span>
+              </div>
+              <p class="premium-slide-note">Register first and manage the business only from the official Admin Panel.</p>
+            </div>
+            <div class="premium-slide-visual" aria-hidden="true">
+              <div class="premium-poster premium-poster-console">
+                <div class="premium-poster-glow"></div>
+                <div class="premium-console-window">
+                  <div class="premium-console-top"><span></span><span></span><span></span></div>
+                  <div class="premium-console-layout">
+                    <div class="premium-console-panel premium-console-panel-large">
+                      <small>Live Orders</small>
+                      <strong>In Progress to Dispatch</strong>
+                    </div>
+                    <div class="premium-console-bars"><span></span><span></span><span></span></div>
+                    <div class="premium-console-panel premium-console-panel-small">
+                      <small>Invoices</small>
+                      <strong>Digitally signed PDF</strong>
+                    </div>
+                  </div>
+                </div>
+                <div class="premium-floating-note note-top-left"><span>MongoDB</span><strong>Live Sync</strong></div>
+                <div class="premium-floating-note note-bottom-right"><span>Courier</span><strong>AWB after cutoff</strong></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="premium-home-slide slide-automation" data-slide-index="1">
+            <div class="premium-slide-copy">
+              <span class="premium-slide-eyebrow">Automation Without Clutter</span>
+              <h1>Automate daily operations with a calm, professional flow.</h1>
+              <p>Cutoff rules, complaint handling, statements, and courier actions stay organized without extra screens or unnecessary noise.</p>
+              <div class="premium-slide-pills" aria-label="Automation highlights">
+                <span>Cutoff rules</span>
+                <span>Statement exports</span>
+                <span>Complaint actions</span>
+              </div>
+              <p class="premium-slide-note">Built to keep the workflow structured before and after cutoff time.</p>
+            </div>
+            <div class="premium-slide-visual" aria-hidden="true">
+              <div class="premium-poster premium-poster-stack">
+                <div class="premium-poster-glow"></div>
+                <div class="premium-stack-card stack-card-primary">
+                  <small>Cutoff Logic</small>
+                  <strong>In Progress before cutoff</strong>
+                </div>
+                <div class="premium-stack-card stack-card-secondary">
+                  <small>Complaints</small>
+                  <strong>Approve, Resolved, Rejected</strong>
+                </div>
+                <div class="premium-stack-card stack-card-tertiary">
+                  <small>Statements</small>
+                  <strong>PDF, Excel, CSV</strong>
+                </div>
+                <div class="premium-scan-line"></div>
+                <div class="premium-floating-note note-mid-right"><span>Dispatch</span><strong>Automatic handoff</strong></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="premium-home-slide slide-showcase" data-slide-index="2">
+            <div class="premium-slide-copy">
+              <span class="premium-slide-eyebrow">Premium Showcase</span>
+              <h1>Present your business in a cleaner, more premium digital frame.</h1>
+              <p>The first page now feels like a polished showroom, with richer presentation, stronger structure, and a smoother changing visual story.</p>
+              <div class="premium-slide-pills" aria-label="Showcase highlights">
+                <span>Dark premium visuals</span>
+                <span>Full-width layout</span>
+                <span>Clean presentation</span>
+              </div>
+              <p class="premium-slide-note">This visual replaces the earlier orb artwork with a more display-like premium scene.</p>
+            </div>
+            <div class="premium-slide-visual" aria-hidden="true">
+              <div class="premium-poster premium-poster-showcase">
+                <div class="premium-poster-glow"></div>
+                <div class="premium-showcase-stage"></div>
+                <div class="premium-showcase-beam"></div>
+                <div class="premium-showcase-device">
+                  <div class="premium-showcase-device-top"></div>
+                  <div class="premium-showcase-device-screen">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
+                </div>
+                <div class="premium-showcase-glass"></div>
+                <div class="premium-showcase-card showcase-card-left"><small>Plans</small><strong>Silver, Gold, Platinum</strong></div>
+                <div class="premium-showcase-card showcase-card-top"><small>Notifications</small><strong>Live Feed</strong></div>
+                <div class="premium-showcase-card showcase-card-bottom"><small>Workspace</small><strong>Simple and professional</strong></div>
+                <div class="premium-showcase-bars"><span></span><span></span><span></span><span></span></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="premium-home-slide slide-intelligence" data-slide-index="3">
+            <div class="premium-slide-copy">
+              <span class="premium-slide-eyebrow">Insight Layer</span>
+              <h1>Turn business data into a more visual and readable daily dashboard.</h1>
+              <p>Performance snapshots, growth movement, and live status can sit in one premium frame without making the first page feel crowded.</p>
+              <div class="premium-slide-pills" aria-label="Insight highlights">
+                <span>Growth cards</span>
+                <span>Live snapshots</span>
+                <span>Strong readability</span>
+              </div>
+              <p class="premium-slide-note">Built to look premium first, while still feeling simple and easy to read.</p>
+            </div>
+            <div class="premium-slide-visual" aria-hidden="true">
+              <div class="premium-poster premium-poster-matrix">
+                <div class="premium-poster-glow"></div>
+                <div class="premium-matrix-panel"></div>
+                <div class="premium-matrix-chart">
+                  <span></span><span></span><span></span><span></span><span></span>
+                </div>
+                <div class="premium-matrix-card matrix-card-top"><small>Growth</small><strong>Live movement</strong></div>
+                <div class="premium-matrix-card matrix-card-mid"><small>Revenue</small><strong>Clean summary</strong></div>
+                <div class="premium-matrix-card matrix-card-bottom"><small>Orders</small><strong>In one timeline</strong></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="premium-home-slide slide-payments" data-slide-index="4">
+            <div class="premium-slide-copy">
+              <span class="premium-slide-eyebrow">Payment View</span>
+              <h1>Keep billing, collections, and invoices inside the same premium interface.</h1>
+              <p>Cards, UPI, invoices, and receipt actions can be shown with a more premium layout language that still stays calm and professional.</p>
+              <div class="premium-slide-pills" aria-label="Payment highlights">
+                <span>Invoice flow</span>
+                <span>Collection view</span>
+                <span>Digital payments</span>
+              </div>
+              <p class="premium-slide-note">The visual language stays consistent with the hero instead of shifting into another style later.</p>
+            </div>
+            <div class="premium-slide-visual" aria-hidden="true">
+              <div class="premium-poster premium-poster-payments">
+                <div class="premium-poster-glow"></div>
+                <div class="premium-payment-card payment-card-primary">
+                  <small>Invoice</small>
+                  <strong>Signed and saved</strong>
+                </div>
+                <div class="premium-payment-card payment-card-secondary">
+                  <small>Payment Mix</small>
+                  <strong>UPI, card, wallet</strong>
+                </div>
+                <div class="premium-payment-card payment-card-tertiary">
+                  <small>Statement</small>
+                  <strong>Live export ready</strong>
+                </div>
+                <div class="premium-payment-wave"></div>
+                <div class="premium-payment-chip chip-left"><small>Collection</small><strong>Realtime</strong></div>
+                <div class="premium-payment-chip chip-right"><small>Ledger</small><strong>Synced</strong></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="premium-home-slide slide-launch" data-slide-index="5">
+            <div class="premium-slide-copy">
+              <span class="premium-slide-eyebrow">Launch Flow</span>
+              <h1>Show dispatch, delivery, and customer updates in a more cinematic premium scene.</h1>
+              <p>The homepage can rotate across multiple visual moods while still speaking the same brand language from top to bottom.</p>
+              <div class="premium-slide-pills" aria-label="Launch highlights">
+                <span>Courier route</span>
+                <span>Dispatch ready</span>
+                <span>Live motion</span>
+              </div>
+              <p class="premium-slide-note">Six changing visuals now rotate automatically to keep the first screen more alive.</p>
+            </div>
+            <div class="premium-slide-visual" aria-hidden="true">
+              <div class="premium-poster premium-poster-route">
+                <div class="premium-poster-glow"></div>
+                <div class="premium-route-board"></div>
+                <div class="premium-route-line"></div>
+                <div class="premium-route-node route-node-start"></div>
+                <div class="premium-route-node route-node-mid"></div>
+                <div class="premium-route-node route-node-end"></div>
+                <div class="premium-route-tag tag-start"><small>Pickup</small><strong>Queued</strong></div>
+                <div class="premium-route-tag tag-end"><small>Dispatch</small><strong>Live</strong></div>
+                <div class="premium-route-tag tag-bottom"><small>Status</small><strong>In motion</strong></div>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="premium-home-access-bar" aria-label="Homepage access">
+          <div class="dropdown premium-access-dropdown">
+            <button class="premium-account-trigger" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Open login and signup menu">
+              <span class="premium-account-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" role="presentation" focusable="false">
+                  <path d="M12 12.4a4.2 4.2 0 1 0-4.2-4.2 4.2 4.2 0 0 0 4.2 4.2Zm0 2.1c-4.4 0-8 2.2-8 5v.5a.9.9 0 0 0 .9.9h14.2a.9.9 0 0 0 .9-.9V19.5c0-2.8-3.6-5-8-5Z"/>
+                </svg>
+              </span>
+              <span class="premium-account-label">Account</span>
+              <span class="premium-account-caret" aria-hidden="true">+</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end premium-account-menu">
+              <li><a class="dropdown-item" href="admin.html">Login</a></li>
+              <li><a class="dropdown-item" href="business-register.html">Sign Up</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="premium-home-slider-footer">
+          <div class="premium-home-slider-dots" id="homepage-slider-dots" aria-label="Homepage slides">
+            <button type="button" class="premium-slider-dot is-active" data-slide-to="0" aria-label="Show slide 1"></button>
+            <button type="button" class="premium-slider-dot" data-slide-to="1" aria-label="Show slide 2"></button>
+            <button type="button" class="premium-slider-dot" data-slide-to="2" aria-label="Show slide 3"></button>
+            <button type="button" class="premium-slider-dot" data-slide-to="3" aria-label="Show slide 4"></button>
+            <button type="button" class="premium-slider-dot" data-slide-to="4" aria-label="Show slide 5"></button>
+            <button type="button" class="premium-slider-dot" data-slide-to="5" aria-label="Show slide 6"></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="premium-home-notification-wrap">
+        <section class="premium-home-card premium-notification-card" aria-label="Live notifications">
+          <div class="premium-panel-tag">Live Notifications</div>
+          <h3>Published business updates from admin appear here in real time.</h3>
+          <div class="notification-stage" id="homepage-notification-stage" aria-live="polite">
+            <div class="notification-track" id="homepage-notification-track">
+              <div class="notification-item notification-item-placeholder">
+                <span class="notification-dot" aria-hidden="true"></span>
+                <div>
+                  <strong>No live notifications yet</strong>
+                  <span>Published business notifications will move here automatically.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <section class="premium-home-card premium-summary-card premium-home-summary-band" aria-label="Portal overview">
+        <div class="premium-panel-tag">Portal Overview</div>
+        <h3>Professional tools without clutter.</h3>
+        <div class="premium-summary-grid">
+          <div class="premium-summary-item">
+            <span>Plans</span>
+            <strong>Silver, Gold, Platinum</strong>
+          </div>
+          <div class="premium-summary-item">
+            <span>Sync</span>
+            <strong>MongoDB live data</strong>
+          </div>
+          <div class="premium-summary-item">
+            <span>Access</span>
+            <strong>Admin, invoices, courier</strong>
+          </div>
+          <div class="premium-summary-item">
+            <span>ROBERT</span>
+            <strong>Gold and Platinum</strong>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</section>
+
+<section id="plans">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">✦ Plans</div>
+      <h2 class="section-title gradient-text">Simple payment plans for every stage</h2>
+      <p class="section-desc">Choose a clean monthly plan that matches your size, workflow, and growth pace.</p>
+    </div>
+    <div class="pricing-flex" aria-label="SmartLocal plans">
+      <article class="pricing-card pricing-card-silver">
+        <div class="pricing-card-head">
+          <span class="pricing-tier">Silver</span>
+          <div class="pricing-value"><span class="pricing-currency">₹</span>999<span class="pricing-period">/month</span></div>
+          <p class="pricing-meta">Best for new and small local businesses.</p>
+        </div>
+        <ul class="pricing-points">
+          <li>Business dashboard and basic order flow</li>
+          <li>Invoice support and payment tracking</li>
+          <li>Essential business profile and support</li>
+          <li>ROBERT access starts from Gold and Platinum</li>
+        </ul>
+        <a href="business-register.html?plan=silver" class="pricing-link">Choose Silver</a>
+      </article>
+      <article class="pricing-card pricing-card-gold is-featured">
+        <div class="pricing-card-head">
+          <span class="pricing-tier">Gold</span>
+          <div class="pricing-value"><span class="pricing-currency">₹</span>2,499<span class="pricing-period">/month</span></div>
+          <p class="pricing-meta">Best for growing stores handling regular orders and courier work.</p>
+        </div>
+        <ul class="pricing-points">
+          <li>Everything in Silver plus stronger automation</li>
+          <li>Courier flow, complaint support, and statements</li>
+          <li>ROBERT-assisted operations and reports</li>
+        </ul>
+        <a href="business-register.html?plan=gold" class="pricing-link">Choose Gold</a>
+      </article>
+      <article class="pricing-card pricing-card-platinum">
+        <div class="pricing-card-head">
+          <span class="pricing-tier">Platinum</span>
+          <div class="pricing-value"><span class="pricing-currency">₹</span>4,999<span class="pricing-period">/month</span></div>
+          <p class="pricing-meta">Best for advanced businesses needing full control and premium tools.</p>
+        </div>
+        <ul class="pricing-points">
+          <li>Everything in Gold plus premium analytics</li>
+          <li>Advanced monitoring, market tools, and priority handling</li>
+          <li>Full ROBERT access with premium business support</li>
+        </ul>
+        <a href="business-register.html?plan=platinum" class="pricing-link">Choose Platinum</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">✦ Features</div>
+      <h2 class="section-title gradient-text">Everything You Need to Go Digital</h2>
+      <p class="section-desc">Powerful tools built specifically for local businesses — all in one platform.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feat-card">
+        <div class="feat-icon icon-blue">🌐</div>
+        <div class="feat-title">Instant Website Builder</div>
+        <p class="feat-desc">Create a professional website in minutes with drag-and-drop tools. SEO optimized and mobile-ready out of the box.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon icon-purple feat-icon-calendar" aria-hidden="true">
+          <div class="feat-live-calendar" id="smart-booking-calendar">
+            <span class="feat-live-calendar-month" id="smart-booking-calendar-month">APR</span>
+            <span class="feat-live-calendar-day" id="smart-booking-calendar-day">19</span>
+          </div>
+        </div>
+        <div class="feat-title">Smart Booking System</div>
+        <p class="feat-desc">Let customers book appointments 24/7. Automated reminders reduce no-shows by up to 60%.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon icon-green">💳</div>
+        <div class="feat-title">Digital Payments</div>
+        <p class="feat-desc">Accept UPI, cards, and wallets. Instant settlement with zero hidden fees. Full transaction history always accessible.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon icon-pink">📱</div>
+        <div class="feat-title">Social Media Auto-Post</div>
+        <p class="feat-desc">AI generates and schedules posts for Instagram, Facebook & WhatsApp. Stay visible without the effort.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon icon-gold">⭐</div>
+        <div class="feat-title">Reviews & Reputation</div>
+        <p class="feat-desc">Automatically collect Google and Facebook reviews. Monitor and respond from one dashboard.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon icon-red">📊</div>
+        <div class="feat-title">Real-Time Analytics</div>
+        <p class="feat-desc">Track footfall, revenue trends, customer retention and campaign ROI with beautiful live dashboards.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BUSINESS TYPES -->
+<section id="businesses" style="padding:6rem 0">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">✦ Industries</div>
+      <h2 class="section-title gradient-text">Built for Every Local Business</h2>
+      <p class="section-desc">Specialized templates and tools crafted for your specific industry.</p>
+    </div>
+    <div class="biz-grid">
+      <a href="business-register.html?plan=gold" class="biz-card"><span class="biz-emoji">💇</span><div class="biz-name">Salons & Spas</div></a>
+      <a href="business-register.html?plan=gold" class="biz-card"><span class="biz-emoji">📚</span><div class="biz-name">Tuition Centers</div></a>
+      <a href="business-register.html?plan=gold" class="biz-card"><span class="biz-emoji">💪</span><div class="biz-name">Gyms & Fitness</div></a>
+      <a href="business-register.html?plan=platinum" class="biz-card"><span class="biz-emoji">🏥</span><div class="biz-name">Clinics & Doctors</div></a>
+      <a href="business-register.html?plan=silver" class="biz-card"><span class="biz-emoji">🛒</span><div class="biz-name">Grocery Stores</div></a>
+      <a href="business-register.html?plan=silver" class="biz-card"><span class="biz-emoji">🍕</span><div class="biz-name">Restaurants</div></a>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">✦ Process</div>
+      <h2 class="section-title gradient-text">Go Live in 4 Simple Steps</h2>
+      <p class="section-desc">From zero to a fully digital business — faster than you think.</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">01</div>
+        <div class="step-title"><a href="business-register.html" style="color: inherit; text-decoration: none;">Register Your Business</a></div>
+        <p class="step-desc">Sign up in 2 minutes. Choose your business category and provide basic details.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">02</div>
+        <div class="step-title">Pick Your Template</div>
+        <p class="step-desc">Choose from 50+ industry-specific templates designed to convert visitors into customers.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">03</div>
+        <div class="step-title">Customize & Brand</div>
+        <p class="step-desc">Add your logo, photos, services, and pricing. AI helps you write compelling content.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">04</div>
+        <div class="step-title">Launch & Grow</div>
+        <p class="step-desc">Go live instantly. Your business appears on Google, Maps, and social media automatically.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">✦ Contact Us</div>
+      <h2 class="section-title gradient-text">Ready to Grow Your Local Business?</h2>
+      <p class="section-desc">Send us a message for onboarding help, product questions, or personalized guidance for your business.</p>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-panel">
+        <div class="contact-hero">
+          <div class="contact-hero-icon">✉️</div>
+          <h3>Talk to our local business experts</h3>
+          <p>Fast replies, personalized onboarding, and help crafting your first digital presence.</p>
+        </div>
+        <div class="contact-cards">
+          <div class="contact-card">
+            <div class="contact-card-icon">📍</div>
+            <div>
+              <h5>Office</h5>
+              <p>Mumbai, India</p>
+            </div>
+          </div>
+          <div class="contact-card">
+            <div class="contact-card-icon">📧</div>
+            <div>
+              <h5>Email</h5>
+              <p>support@smartlocal.in</p>
+            </div>
+          </div>
+          <div class="contact-card">
+            <div class="contact-card-icon">📞</div>
+            <div>
+              <h5>Phone</h5>
+              <p>+91 98765 43210</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <form id="contact-form" class="contact-form" action="https://formspree.io/f/xeepvrqa" method="POST">
+        <div class="form-group">
+          <label for="contact-name">Name</label>
+          <input id="contact-name" name="name" type="text" placeholder="Your name" required>
+        </div>
+        <div class="form-group">
+          <label for="contact-email">Email</label>
+          <input id="contact-email" name="email" type="email" placeholder="you@example.com" required>
+        </div>
+        <div class="form-group">
+          <label for="contact-message">Message</label>
+          <textarea id="contact-message" name="message" rows="6" placeholder="Tell us how we can help" required></textarea>
+        </div>
+        <button type="submit" class="btn-glow btn-primary">Send Message</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <span class="logo">Smart<span>Local</span></span>
+      <p class="footer-desc">Empowering India's local businesses to thrive in the digital economy. Built with ❤️ for shop owners, entrepreneurs, and dreamers.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Platform</h4>
+      <a href="index.html">Home</a>
+      <a href="admin.html">Admin</a>
+      <a href="menu.html">Menu</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <div class="footer-col">
+      <h4>Business</h4>
+      <a href="business-register.html?plan=gold">Salons</a>
+      <a href="business-register.html?plan=gold">Gyms</a>
+      <a href="business-register.html?plan=platinum">Clinics</a>
+      <a href="business-register.html?plan=silver">Restaurants</a>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <a href="contact.html">Contact Us</a>
+      <a href="#">Help Center</a>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+    </div>
+  </div>
+  <div class="footer-visit-strip">
+    <div class="footer-visit-counter" id="footer-visit-counter" aria-live="polite">
+      <span class="footer-visit-label">Total Website Visitors</span>
+      <strong class="footer-visit-value" id="footer-visit-count">Loading...</strong>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-bottom-copy">
+      <p>© 2025 SmartLocal. All rights reserved. Made in India 🇮🇳</p>
+    </div>
+    <div class="social-links">
+      <a class="social-btn" href="#">📘</a>
+      <a class="social-btn" href="#">📸</a>
+      <a class="social-btn" href="#">🐦</a>
+      <a class="social-btn" href="#">💼</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ROBERT AI Assistant -->
+<div class="rovert-fab" id="rovert-fab" aria-label="Open ROBERT Assistant" title="Open ROBERT Assistant">
+  <span class="rovert-fab-icon" aria-hidden="true">
+    <span class="rovert-bot">
+      <span class="rovert-antenna"></span>
+      <span class="rovert-face">
+        <span class="rovert-side rovert-side-left"></span>
+        <span class="rovert-side rovert-side-right"></span>
+        <span class="rovert-eye"></span>
+        <span class="rovert-eye"></span>
+        <span class="rovert-mouth"></span>
+      </span>
+      <span class="rovert-body"></span>
+      <span class="rovert-hand">Hi</span>
+    </span>
+  </span>
+  <span class="rovert-fab-text">ROBERT</span>
+</div>
+
+<div class="rovert-panel" id="rovert-panel" aria-hidden="true">
+  <div class="rovert-panel-inner">
+  <div class="rovert-panel-header">
+    <div class="rovert-header-left">
+      <div class="rovert-avatar" aria-hidden="true">
+        <span class="rovert-bot">
+          <span class="rovert-antenna"></span>
+          <span class="rovert-face">
+            <span class="rovert-side rovert-side-left"></span>
+            <span class="rovert-side rovert-side-right"></span>
+            <span class="rovert-eye"></span>
+            <span class="rovert-eye"></span>
+            <span class="rovert-mouth"></span>
+          </span>
+          <span class="rovert-body"></span>
+          <span class="rovert-hand">Hi</span>
+        </span>
+      </div>
+      <div>
+        <div class="rovert-title">ROBERT AI Assistant</div>
+        <div class="rovert-subtitle">Voice-enabled business help</div>
+      </div>
+    </div>
+    <button class="rovert-close" id="rovert-close" aria-label="Close ROBERT">✕</button>
+  </div>
+  <div class="rovert-status" id="rovert-status">ROBERT is ready. Secure key is loaded from the server.</div>
+  <div class="rovert-quick compact" id="rovert-quick">
+    <button class="rovert-chip" data-prompt="Create order for Rahul phone 9999999999 address Mumbai items Shampoo x2 @500, Conditioner x1 @300 gst 18 payment UPI delivery 560001 weight 2kg value 1300">Create Order</button>
+    <button class="rovert-chip" data-prompt="Book courier from 400001 to 560001 weight 2kg value 1200 service express provider bluedart">Book Courier</button>
+    <button class="rovert-chip" data-prompt="Lodge complaint name Rahul phone 9999999999 details Package damaged">Lodge Complaint</button>
+    <button class="rovert-chip" data-prompt="Courier analysis">Courier Analysis</button>
+    <button class="rovert-chip" data-prompt="What is my current segment">Current Segment</button>
+    <button class="rovert-chip" data-prompt="Upgrade my plan">Upgrade Plan</button>
+    <button class="rovert-chip" data-prompt="Downgrade my plan">Downgrade Plan</button>
+    <button class="rovert-chip" data-prompt="Download statement pdf">Statement PDF</button>
+  </div>
+  <div class="rovert-chat" id="rovert-chat"></div>
+  <div class="rovert-input-row">
+    <textarea id="rovert-input" rows="2" placeholder="Ask Robert about your business..."></textarea>
+    <button class="btn-glow btn-primary" id="rovert-send">Send</button>
+    <button class="btn-glow btn-outline" id="rovert-stop" title="Stop response">Stop</button>
+    <button class="btn-glow btn-outline" id="rovert-mic" title="Voice input" aria-label="Voice input">
+      <span class="rovert-btn-icon" aria-hidden="true">&#127908;</span>
+    </button>
+  </div>
+  <div class="rovert-controls">
+    <button class="btn-glow btn-outline rovert-clear" id="rovert-clear">Clear Chat</button>
+    <label class="rovert-toggle">
+      <input type="checkbox" id="rovert-voice-toggle" checked>
+      <span>Speak replies</span>
+    </label>
+    <label class="rovert-toggle">
+      <input type="checkbox" id="rovert-voice-autosend">
+      <span>Auto-send voice</span>
+    </label>
+    <label class="rovert-toggle rovert-language-control">
+      <span class="rovert-language-label">Language</span>
+      <select id="rovert-language">
+        <option value="auto">Auto</option>
+        <option value="en-US">English</option>
+        <option value="hi-IN">Hindi</option>
+        <option value="bn-IN">Bengali</option>
+        <option value="ta-IN">Tamil</option>
+        <option value="te-IN">Telugu</option>
+        <option value="mr-IN">Marathi</option>
+        <option value="gu-IN">Gujarati</option>
+        <option value="pa-IN">Punjabi</option>
+        <option value="ur-IN">Urdu</option>
+        <option value="kn-IN">Kannada</option>
+        <option value="ml-IN">Malayalam</option>
+        <option value="or-IN">Odia</option>
+        <option value="as-IN">Assamese</option>
+        <option value="fr-FR">French</option>
+        <option value="es-ES">Spanish</option>
+        <option value="de-DE">German</option>
+        <option value="it-IT">Italian</option>
+        <option value="pt-BR">Portuguese</option>
+        <option value="ru-RU">Russian</option>
+        <option value="ja-JP">Japanese</option>
+        <option value="ko-KR">Korean</option>
+        <option value="zh-CN">Chinese</option>
+        <option value="ar-SA">Arabic</option>
+      </select>
+    </label>
+    <label class="rovert-toggle rovert-length-control">
+      <span class="rovert-language-label">Length</span>
+      <select id="rovert-length">
+        <option value="short">Short</option>
+        <option value="normal">Normal</option>
+        <option value="long">Long</option>
+      </select>
+    </label>
+  </div>
+  <div class="rovert-file-row">
+    <label class="rovert-file">
+      <input type="file" id="rovert-file" accept=".pdf,image/*">
+      <span>Upload PDF/Image</span>
+    </label>
+    <select id="rovert-analysis">
+      <option value="short">Short analysis</option>
+      <option value="long">Long analysis</option>
+    </select>
+    <label class="rovert-toggle rovert-ocr">
+      <input type="checkbox" id="rovert-ocr" checked>
+      <span>OCR</span>
+    </label>
+    <button class="btn-glow btn-outline rovert-analysis-btn" id="rovert-analysis-download" type="button">Download Analysis</button>
+    <span class="rovert-file-name" id="rovert-file-name">No file selected</span>
+  </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.3/dist/tesseract.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

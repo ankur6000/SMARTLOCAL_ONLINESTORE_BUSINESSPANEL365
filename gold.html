@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SL STORES | Gold Rates</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="bg-orbs">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+</div>
+
+<nav>
+  <div class="nav-inner">
+    <div class="logo">Smart<span>Local</span></div>
+    <button class="nav-toggle" type="button" aria-label="Toggle navigation">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="admin.html">Admin</a></li>
+      <li><a href="gold.html">Gold Rates</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="navbar-actions">
+      <label class="sound-toggle">
+        <input type="checkbox" class="sound-toggle-input" checked>
+        <span>Sound FX</span>
+      </label>
+      <a href="admin.html" class="btn-glow btn-outline command-center-link-btn">Back To Admin</a>
+    </div>
+  </div>
+</nav>
+
+<main class="precious-page">
+  <section class="container">
+    <div class="section-header">
+      <div class="section-tag">Precious Metals</div>
+      <h1 class="section-title gradient-text">Gold, Silver, Platinum And Diamond Rates</h1>
+      <p class="section-desc">MongoDB synced live per gram dashboard with landscape graphs refreshing every 1 second in rupees.</p>
+    </div>
+
+    <div class="precious-shell">
+      <div class="precious-toolbar">
+        <div>
+          <div class="precious-toolbar-label">Live Rate Monitor</div>
+          <h2 class="precious-toolbar-title">Gold Silver Rates</h2>
+          <p class="precious-toolbar-copy">Rates are shown per gram and the graphs update every 1 second from the live portal feed.</p>
+        </div>
+        <div class="precious-toolbar-meta">
+          <div class="precious-toolbar-pill" id="precious-refresh-pill">Refreshing every 1 second</div>
+          <div class="precious-toolbar-time" id="precious-live-time">Current date and time loading...</div>
+        </div>
+      </div>
+
+      <div class="precious-rate-grid" id="precious-rate-grid">
+        <article class="metal-rate-card">
+          <div class="metal-rate-top">
+            <span class="metal-rate-badge">Loading</span>
+            <span class="metal-rate-trend flat">WAIT</span>
+          </div>
+          <h3 class="metal-rate-name">Gold</h3>
+          <div class="metal-rate-value">₹0 / g</div>
+          <div class="metal-rate-change">Fetching MongoDB live rates...</div>
+          <div class="metal-rate-updated">Please wait</div>
+        </article>
+      </div>
+
+      <div class="precious-chart-card">
+        <div class="precious-chart-head">
+          <div>
+            <div class="precious-chart-eyebrow">Landscape View</div>
+            <h3 class="precious-chart-title">Live Precious Metal Rate Graph</h3>
+            <p class="precious-chart-copy">Wide multi-line graph for gold, silver, platinum, and diamond rates per gram.</p>
+          </div>
+          <div class="precious-chart-board">
+            <span class="precious-chart-board-label">Feed Status</span>
+            <strong id="precious-chart-status">Connecting</strong>
+            <span id="precious-chart-summary">MongoDB rate history is loading.</span>
+          </div>
+        </div>
+        <div class="precious-chart-wrap">
+          <canvas id="precious-rates-chart" width="1200" height="420"></canvas>
+        </div>
+        <div class="precious-chart-legend" id="precious-rates-legend"></div>
+      </div>
+
+      <div class="precious-solo-grid" id="precious-solo-grid">
+        <article class="precious-chart-card precious-solo-card" data-metal-card="gold">
+          <div class="precious-chart-head precious-solo-head">
+            <div>
+              <div class="precious-chart-eyebrow">Gold Graph</div>
+              <h3 class="precious-chart-title">Gold Rate Landscape</h3>
+              <p class="precious-chart-copy">Dedicated wide graph for live gold movement per gram.</p>
+            </div>
+            <div class="precious-chart-board precious-solo-board">
+              <span class="precious-chart-board-label">Gold Rate</span>
+              <strong id="gold-rate-current">₹0.00 / g</strong>
+              <span id="gold-rate-summary">Waiting for live gold history.</span>
+            </div>
+          </div>
+          <div class="precious-chart-wrap precious-solo-wrap">
+            <canvas id="gold-rate-chart" width="900" height="300"></canvas>
+          </div>
+        </article>
+
+        <article class="precious-chart-card precious-solo-card" data-metal-card="silver">
+          <div class="precious-chart-head precious-solo-head">
+            <div>
+              <div class="precious-chart-eyebrow">Silver Graph</div>
+              <h3 class="precious-chart-title">Silver Rate Landscape</h3>
+              <p class="precious-chart-copy">Dedicated wide graph for live silver movement per gram.</p>
+            </div>
+            <div class="precious-chart-board precious-solo-board">
+              <span class="precious-chart-board-label">Silver Rate</span>
+              <strong id="silver-rate-current">₹0.00 / g</strong>
+              <span id="silver-rate-summary">Waiting for live silver history.</span>
+            </div>
+          </div>
+          <div class="precious-chart-wrap precious-solo-wrap">
+            <canvas id="silver-rate-chart" width="900" height="300"></canvas>
+          </div>
+        </article>
+
+        <article class="precious-chart-card precious-solo-card" data-metal-card="platinum">
+          <div class="precious-chart-head precious-solo-head">
+            <div>
+              <div class="precious-chart-eyebrow">Platinum Graph</div>
+              <h3 class="precious-chart-title">Platinum Rate Landscape</h3>
+              <p class="precious-chart-copy">Dedicated wide graph for live platinum movement per gram.</p>
+            </div>
+            <div class="precious-chart-board precious-solo-board">
+              <span class="precious-chart-board-label">Platinum Rate</span>
+              <strong id="platinum-rate-current">₹0.00 / g</strong>
+              <span id="platinum-rate-summary">Waiting for live platinum history.</span>
+            </div>
+          </div>
+          <div class="precious-chart-wrap precious-solo-wrap">
+            <canvas id="platinum-rate-chart" width="900" height="300"></canvas>
+          </div>
+        </article>
+
+        <article class="precious-chart-card precious-solo-card" data-metal-card="diamond">
+          <div class="precious-chart-head precious-solo-head">
+            <div>
+              <div class="precious-chart-eyebrow">Diamond Graph</div>
+              <h3 class="precious-chart-title">Diamond Rate Landscape</h3>
+              <p class="precious-chart-copy">Dedicated wide graph for live diamond movement per gram.</p>
+            </div>
+            <div class="precious-chart-board precious-solo-board">
+              <span class="precious-chart-board-label">Diamond Rate</span>
+              <strong id="diamond-rate-current">₹0.00 / g</strong>
+              <span id="diamond-rate-summary">Waiting for live diamond history.</span>
+            </div>
+          </div>
+          <div class="precious-chart-wrap precious-solo-wrap">
+            <canvas id="diamond-rate-chart" width="900" height="300"></canvas>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="script.js"></script>
+<script src="gold-rates.js"></script>
+</body>
+</html>

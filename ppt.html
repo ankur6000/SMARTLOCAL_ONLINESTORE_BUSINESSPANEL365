@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bank Account Portal - SmartLocal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .bank-page {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top right, rgba(0, 200, 255, 0.16), transparent 32%),
+        radial-gradient(circle at bottom left, rgba(255, 215, 0, 0.12), transparent 30%),
+        linear-gradient(180deg, #040915 0%, #071221 100%);
+      padding: 7.5rem 1.2rem 3rem;
+    }
+    .bank-shell {
+      max-width: 1220px;
+      margin: 0 auto;
+      display: grid;
+      gap: 1.4rem;
+    }
+    .bank-hero,
+    .bank-card {
+      border-radius: 26px;
+      border: 1px solid rgba(0, 200, 255, 0.18);
+      background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22), inset 0 0 18px rgba(255,255,255,0.04);
+      backdrop-filter: blur(14px);
+    }
+    .bank-hero {
+      padding: 1.8rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .bank-eyebrow {
+      font-size: 0.78rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #8dc9ff;
+      font-weight: 700;
+    }
+    .bank-title {
+      margin: 0.45rem 0 0.6rem;
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(1.5rem, 3vw, 2.5rem);
+      color: #f6fbff;
+      text-shadow: 0 0 18px rgba(0, 200, 255, 0.22);
+    }
+    .bank-copy {
+      margin: 0;
+      max-width: 45rem;
+      color: #cfe7ff;
+      line-height: 1.7;
+      font-size: 0.98rem;
+    }
+    .bank-hero-status {
+      min-width: 230px;
+      padding: 1rem 1.05rem;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: linear-gradient(180deg, rgba(11, 27, 56, 0.95), rgba(7, 16, 34, 0.94));
+    }
+    .bank-hero-status span {
+      display: block;
+      font-size: 0.76rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #8fcaff;
+      font-weight: 700;
+      margin-bottom: 0.45rem;
+    }
+    .bank-hero-status strong {
+      display: block;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.2rem;
+      color: #87ffd1;
+      margin-bottom: 0.35rem;
+    }
+    .bank-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+      gap: 1.4rem;
+    }
+    .bank-card {
+      padding: 1.5rem;
+    }
+    .bank-card h3 {
+      margin: 0 0 1rem;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.05rem;
+      color: #f4fbff;
+    }
+    .bank-info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.9rem;
+    }
+    .bank-info-box,
+    .bank-mini-card {
+      padding: 1rem;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(9, 18, 38, 0.84);
+      min-width: 0;
+    }
+    .bank-info-box span,
+    .bank-mini-card span {
+      display: block;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #91c9fb;
+      font-weight: 700;
+      margin-bottom: 0.45rem;
+    }
+    .bank-info-box strong,
+    .bank-mini-card strong {
+      display: block;
+      color: #f4fbff;
+      font-size: 1rem;
+      line-height: 1.4;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+    .bank-side-stack {
+      display: grid;
+      gap: 1rem;
+    }
+    .bank-mini-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.85rem;
+    }
+    .bank-actions {
+      display: flex;
+      gap: 0.85rem;
+      flex-wrap: wrap;
+      margin-top: 1.1rem;
+    }
+    .bank-note {
+      margin-top: 1rem;
+      padding: 0.95rem 1rem;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #c6dfff;
+      line-height: 1.65;
+    }
+    .bank-empty {
+      color: #ffd86b;
+    }
+    @media (max-width: 980px) {
+      .bank-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 640px) {
+      .bank-info-grid,
+      .bank-mini-grid {
+        grid-template-columns: 1fr;
+      }
+      .bank-page {
+        padding-top: 6.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg fixed-top glass-nav">
+    <div class="container-fluid">
+      <a class="navbar-brand logo" href="index.html">Smart<span>Local</span></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAlt">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavAlt">
+        <ul class="navbar-nav mx-auto">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="admin.html">Admin</a></li>
+          <li class="nav-item"><a class="nav-link" href="business-register.html">Register Business</a></li>
+          <li class="nav-item"><a class="nav-link" href="courier.html">Courier</a></li>
+          <li class="nav-item"><a class="nav-link" href="menu.html">Menu</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+        </ul>
+        <div class="nav-actions">
+          <button class="navbar-btn btn-glow btn-primary" onclick="window.location.href='admin.html'">Back To Admin</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="bank-page">
+    <section class="bank-shell">
+      <div class="bank-hero">
+        <div>
+          <div class="bank-eyebrow">Restored Page</div>
+          <h1 class="bank-title">Bank Account Portal</h1>
+          <p class="bank-copy">Review the registered bank account, payout cycle, settlement status, and business-linked account details from one clean page. This restored page is connected to the same logged-in business profile used in the admin panel.</p>
+        </div>
+        <div class="bank-hero-status">
+          <span>Portal Status</span>
+          <strong id="bank-status">Connected</strong>
+          <div id="bank-status-copy" class="bank-copy">Secure business-linked payout view is ready.</div>
+        </div>
+      </div>
+
+      <div class="bank-grid">
+        <section class="bank-card">
+          <h3>Registered Bank Details</h3>
+          <div class="bank-info-grid">
+            <div class="bank-info-box">
+              <span>Business Name</span>
+              <strong id="bank-business-name">Loading...</strong>
+            </div>
+            <div class="bank-info-box">
+              <span>Owner Name</span>
+              <strong id="bank-owner-name">Loading...</strong>
+            </div>
+            <div class="bank-info-box">
+              <span>Account Number</span>
+              <strong id="bank-account-number">Loading...</strong>
+            </div>
+            <div class="bank-info-box">
+              <span>IFSC Code</span>
+              <strong id="bank-ifsc">Loading...</strong>
+            </div>
+            <div class="bank-info-box">
+              <span>Business User ID</span>
+              <strong id="bank-userid">Loading...</strong>
+            </div>
+            <div class="bank-info-box">
+              <span>Email</span>
+              <strong id="bank-email">Loading...</strong>
+            </div>
+          </div>
+          <div class="bank-note" id="bank-note">Loading registered business bank data...</div>
+        </section>
+
+        <aside class="bank-side-stack">
+          <section class="bank-card">
+            <h3>Payout Snapshot</h3>
+            <div class="bank-mini-grid">
+              <div class="bank-mini-card">
+                <span>Payout Cycle</span>
+                <strong id="bank-cycle">T+2 Days</strong>
+              </div>
+              <div class="bank-mini-card">
+                <span>Settlement</span>
+                <strong id="bank-settlement">Daily Batch</strong>
+              </div>
+              <div class="bank-mini-card">
+                <span>Last Sync</span>
+                <strong id="bank-last-sync">--</strong>
+              </div>
+              <div class="bank-mini-card">
+                <span>Security</span>
+                <strong>AES / Masked View</strong>
+              </div>
+            </div>
+            <div class="bank-actions">
+              <a href="admin.html" class="btn-glow btn-primary">Open Command Center</a>
+              <a href="business-register.html" class="btn-glow btn-outline">Update Registration</a>
+            </div>
+          </section>
+
+          <section class="bank-card">
+            <h3>Settlement Notes</h3>
+            <div class="bank-note">Payout summaries on this restored page are derived from the logged-in business registration profile. If bank details are missing here, update them from the business registration flow and then open the admin portal again.</div>
+          </section>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const maskAccountNumber = (value) => {
+      const digits = String(value || '').replace(/\s+/g, '');
+      if (!digits) return 'Not available';
+      if (digits.length <= 4) return digits;
+      return `${'*'.repeat(Math.max(0, digits.length - 4))}${digits.slice(-4)}`;
+    };
+
+    const setText = (id, value) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    };
+
+    const loadBankPage = async () => {
+      let currentUser = null;
+      try {
+        currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+      } catch (error) {
+        currentUser = null;
+      }
+
+      if (!currentUser?.userid) {
+        setText('bank-status', 'Login Required');
+        setText('bank-status-copy', 'Open the admin panel and log in with your registered business account.');
+        setText('bank-business-name', 'Not logged in');
+        setText('bank-owner-name', 'Not logged in');
+        setText('bank-account-number', 'Not available');
+        setText('bank-ifsc', 'Not available');
+        setText('bank-userid', 'Not available');
+        setText('bank-email', 'Not available');
+        const note = document.getElementById('bank-note');
+        if (note) {
+          note.textContent = 'This restored page needs a logged-in business account to fetch bank details.';
+          note.classList.add('bank-empty');
+        }
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/businesses?limit=1&userid=${encodeURIComponent(currentUser.userid)}`);
+        if (!response.ok) throw new Error('fetch-failed');
+        const data = await response.json();
+        const record = Array.isArray(data.items) && data.items.length ? data.items[0] : currentUser;
+
+        setText('bank-business-name', record?.business?.name || currentUser?.business?.name || 'SmartLocal Business');
+        setText('bank-owner-name', record?.name || currentUser?.name || 'Business Owner');
+        setText('bank-account-number', maskAccountNumber(record?.bank || currentUser?.bank || ''));
+        setText('bank-ifsc', record?.ifsc || currentUser?.ifsc || 'Not available');
+        setText('bank-userid', record?.userid || currentUser?.userid || 'Not available');
+        setText('bank-email', record?.email || currentUser?.email || 'Not available');
+        setText('bank-last-sync', new Date().toLocaleString('en-IN'));
+
+        const note = document.getElementById('bank-note');
+        if (note) {
+          const hasBank = Boolean(record?.bank || currentUser?.bank);
+          note.textContent = hasBank
+            ? 'Business-linked bank details loaded successfully from the registered account.'
+            : 'This business is registered, but the bank account fields are currently empty.';
+          note.classList.toggle('bank-empty', !hasBank);
+        }
+      } catch (error) {
+        setText('bank-status', 'Fetch Error');
+        setText('bank-status-copy', 'Could not load business bank details right now.');
+        const note = document.getElementById('bank-note');
+        if (note) {
+          note.textContent = 'The bank page was restored, but the business bank data could not be fetched at this moment.';
+          note.classList.add('bank-empty');
+        }
+      }
+    };
+
+    loadBankPage();
+  </script>
+</body>
+</html>

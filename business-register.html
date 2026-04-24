@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SL STORES | Business Registration</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+
+<!-- ═══════════════════════════════════════════════════════════
+     OTP MODAL STYLES — matching dark neon theme
+═══════════════════════════════════════════════════════════ -->
+<style>
+/* ── OTP Overlay ── */
+#otp-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  align-items: center;
+  justify-content: center;
+}
+#otp-overlay.active { display: flex; }
+
+/* ── Modal Card ── */
+.otp-modal {
+  background: linear-gradient(135deg, rgba(10,10,30,0.97) 0%, rgba(15,15,40,0.97) 100%);
+  border: 1px solid rgba(0, 200, 255, 0.25);
+  border-radius: 20px;
+  padding: 44px 40px 36px;
+  width: min(480px, 94vw);
+  position: relative;
+  box-shadow:
+    0 0 0 1px rgba(0,200,255,0.08),
+    0 0 60px rgba(0,200,255,0.12),
+    0 30px 80px rgba(0,0,0,0.6);
+  animation: otpModalIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+@keyframes otpModalIn {
+  from { opacity:0; transform: scale(0.88) translateY(24px); }
+  to   { opacity:1; transform: scale(1) translateY(0); }
+}
+
+/* close button */
+.otp-close {
+  position: absolute;
+  top: 14px; right: 18px;
+  background: none; border: none;
+  color: rgba(255,255,255,0.4);
+  font-size: 22px;
+  cursor: pointer;
+  transition: color .2s;
+  line-height: 1;
+}
+.otp-close:hover { color: #fff; }
+
+/* icon ring */
+.otp-icon-ring {
+  width: 66px; height: 66px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(0,200,255,0.15), rgba(120,80,255,0.15));
+  border: 1.5px solid rgba(0,200,255,0.35);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 30px;
+  box-shadow: 0 0 24px rgba(0,200,255,0.2);
+}
+
+/* headings */
+.otp-modal h3 {
+  text-align: center;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 6px;
+  letter-spacing: .04em;
+}
+.otp-modal .otp-sub {
+  text-align: center;
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 28px;
+}
+.otp-modal .otp-sub strong {
+  color: rgba(0,200,255,0.85);
+  font-weight: 600;
+}
+
+/* OTP digit boxes */
+.otp-digits {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+.otp-digit {
+  width: 52px; height: 58px;
+  background: rgba(255,255,255,0.04);
+  border: 1.5px solid rgba(0,200,255,0.25);
+  border-radius: 10px;
+  color: #fff;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+  caret-color: #00c8ff;
+  transition: border-color .2s, box-shadow .2s, background .2s;
+  outline: none;
+}
+.otp-digit:focus {
+  border-color: rgba(0,200,255,0.7);
+  background: rgba(0,200,255,0.06);
+  box-shadow: 0 0 14px rgba(0,200,255,0.25);
+}
+.otp-digit.filled {
+  border-color: rgba(0,200,255,0.5);
+  background: rgba(0,200,255,0.08);
+}
+.otp-digit.error-shake {
+  border-color: rgba(255,80,80,0.8) !important;
+  background: rgba(255,60,60,0.08) !important;
+  animation: otpShake 0.45s ease both;
+}
+@keyframes otpShake {
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-6px)}
+  40%{transform:translateX(6px)}
+  60%{transform:translateX(-4px)}
+  80%{transform:translateX(4px)}
+}
+
+/* status message */
+.otp-status {
+  text-align: center;
+  font-size: 0.8rem;
+  min-height: 20px;
+  margin-bottom: 14px;
+  transition: color .25s;
+}
+.otp-status.success { color: #22e87a; }
+.otp-status.error   { color: #ff5252; }
+.otp-status.info    { color: rgba(0,200,255,0.8); }
+
+/* ── Timer + Graph Block ── */
+.otp-timer-block {
+  margin-bottom: 22px;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px;
+  padding: 14px 16px 12px;
+}
+.otp-timer-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.otp-timer-label {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+}
+.otp-countdown {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #00c8ff;
+  white-space: nowrap;
+  transition: color .4s;
+}
+.otp-countdown.urgent { color: #ff5252; }
+#otp-bar-canvas {
+  display: block;
+  width: 100%;
+  height: 44px;
+  border-radius: 6px;
+}
+
+/* verify button */
+.otp-verify-btn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #00c8ff 0%, #7850ff 100%);
+  color: #fff;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  cursor: pointer;
+  transition: opacity .2s, transform .15s, box-shadow .2s;
+  box-shadow: 0 4px 20px rgba(0,200,255,0.3);
+  margin-bottom: 16px;
+}
+.otp-verify-btn:hover  { opacity:.9; transform: translateY(-1px); box-shadow: 0 8px 28px rgba(0,200,255,0.4); }
+.otp-verify-btn:active { transform: translateY(0); }
+.otp-verify-btn:disabled { opacity:.45; cursor:not-allowed; transform:none; }
+
+/* resend row */
+.otp-resend-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.45);
+}
+.otp-resend-btn {
+  background: none; border: none;
+  color: #00c8ff;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+  transition: color .2s;
+}
+.otp-resend-btn:disabled { color: rgba(255,255,255,0.3); cursor:not-allowed; text-decoration:none; }
+.otp-resend-btn:not(:disabled):hover { color: #7850ff; }
+
+/* attempts badge */
+.otp-attempts {
+  text-align: center;
+  font-size: 0.73rem;
+  color: rgba(255,255,255,0.3);
+  margin-top: 10px;
+}
+
+/* ── Sending spinner overlay inside modal ── */
+.otp-sending-mask {
+  display: none;
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  background: rgba(5,5,20,0.88);
+  backdrop-filter: blur(4px);
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 14px;
+  z-index: 10;
+}
+.otp-sending-mask.active { display: flex; }
+.otp-spinner {
+  width: 44px; height: 44px;
+  border: 3px solid rgba(0,200,255,0.15);
+  border-top-color: #00c8ff;
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.otp-sending-mask p {
+  color: rgba(255,255,255,0.6);
+  font-size: 0.85rem;
+  margin: 0;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+  letter-spacing:.06em;
+}
+
+/* ── Expired notice ── */
+.otp-expired-notice {
+  display: none;
+  text-align: center;
+  padding: 18px;
+  background: rgba(255,80,80,0.06);
+  border: 1px solid rgba(255,80,80,0.2);
+  border-radius: 10px;
+  margin-bottom: 16px;
+  color: #ff7070;
+  font-size: 0.83rem;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+  letter-spacing: .04em;
+}
+.otp-expired-notice.visible { display: block; }
+</style>
+</head>
+<body class="register-premium-page">
+
+<div class="bg-grid"></div>
+<div class="bg-orbs">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+</div>
+
+<!-- NAV -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+  <div class="container-fluid">
+    <div class="logo">Smart<span>Local</span></div>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="admin.html">Admin</a></li>
+        <li class="nav-item"><a class="nav-link active" href="business-register.html">Register Business</a></li>
+        <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+      </ul>
+      <button class="btn btn-outline-light" onclick="window.location.href='admin.html'">Login ↗</button>
+    </div>
+  </div>
+</nav>
+
+<!-- BUSINESS REGISTRATION -->
+<section id="business-reg">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">🚀 Start Your Digital Journey</div>
+      <h2 class="section-title gradient-text">Register Your Business</h2>
+      <p class="section-desc">Choose the perfect plan and join thousands of businesses already thriving on SmartLocal.</p>
+    </div>
+
+    <!-- PLAN SELECTION -->
+    <div id="plan-selection">
+      <h3 class="plan-title">Choose Your Membership</h3>
+      <div class="plans-grid">
+        <div class="plan-card" data-plan="silver">
+          <div class="plan-header">
+            <h4 class="plan-name silver-glow">Silver</h4>
+            <div class="plan-price">
+              <span class="currency">₹</span>
+              <span class="amount">999</span>
+              <span class="period">/month</span>
+            </div>
+            <p class="plan-desc">Perfect for small local businesses starting out.</p>
+          </div>
+          <ul class="plan-features">
+            <li>✓ Digital Business Card</li>
+            <li>✓ Basic Analytics</li>
+            <li>✓ Customer Management</li>
+            <li>✓ Mobile App Access</li>
+            <li>✓ Email Support</li>
+            <li>✗ Advanced Reports</li>
+            <li>✗ Priority Support</li>
+            <li>✗ Custom Branding</li>
+          </ul>
+          <button type="button" class="plan-select-btn" onclick="selectPlan('silver')">Select Silver</button>
+        </div>
+
+        <div class="plan-card popular" data-plan="gold">
+          <div class="plan-badge">Most Popular</div>
+          <div class="plan-header">
+            <h4 class="plan-name gold-glow">Gold</h4>
+            <div class="plan-price">
+              <span class="currency">₹</span>
+              <span class="amount">2,499</span>
+              <span class="period">/month</span>
+            </div>
+            <p class="plan-desc">Great for growing businesses that want more power.</p>
+          </div>
+          <ul class="plan-features">
+            <li>✓ Everything in Silver</li>
+            <li>✓ Advanced Analytics</li>
+            <li>✓ Sales Reports & PDF</li>
+            <li>✓ Currency Converter</li>
+            <li>✓ Priority Support</li>
+            <li>✓ Custom Branding</li>
+            <li>✓ Marketing Tools</li>
+            <li>✗ White-label Solution</li>
+          </ul>
+          <button type="button" class="plan-select-btn" onclick="selectPlan('gold')">Select Gold</button>
+        </div>
+
+        <div class="plan-card" data-plan="platinum">
+          <div class="plan-header">
+            <h4 class="plan-name platinum-glow">Platinum</h4>
+            <div class="plan-price">
+              <span class="currency">₹</span>
+              <span class="amount">4,999</span>
+              <span class="period">/month</span>
+            </div>
+            <p class="plan-desc">For premium businesses that need elite support and integrations.</p>
+          </div>
+          <ul class="plan-features">
+            <li>✓ Everything in Gold</li>
+            <li>✓ White-label Solution</li>
+            <li>✓ API Access</li>
+            <li>✓ Multi-location Support</li>
+            <li>✓ Advanced Integrations</li>
+            <li>✓ Dedicated Account Manager</li>
+            <li>✓ Custom Development</li>
+            <li>✓ 24/7 Phone Support</li>
+          </ul>
+          <button type="button" class="plan-select-btn" onclick="selectPlan('platinum')">Select Platinum</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- REGISTRATION FORM -->
+    <div id="registration-form" style="display: none;">
+      <div class="admin-wrapper">
+        <div class="admin-body" style="grid-template-columns: 1fr;">
+          <div class="dash-metric register-card" style="grid-column: span 2;">
+            <div class="register-header">
+              <h3>📝 Complete Your Registration</h3>
+              <p class="register-subtitle">Selected Plan: <span id="selected-plan-display" class="plan-highlight">None</span></p>
+            </div>
+            <form id="business-register-form" class="professional-form">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="reg-userid">User ID</label>
+                  <input type="text" id="reg-userid" placeholder="Choose User ID" required>
+                </div>
+                <div class="form-group">
+                  <label for="reg-name">Full Name</label>
+                  <input type="text" id="reg-name" placeholder="Your Full Name" required>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="reg-email">Email</label>
+                  <input type="email" id="reg-email" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                  <label for="reg-password">Password</label>
+                  <div class="password-input-wrap">
+                    <input type="password" id="reg-password" placeholder="Create Password" autocomplete="new-password" required>
+                    <button type="button" class="password-toggle-btn" id="reg-password-toggle" aria-label="Show password" aria-controls="reg-password" aria-pressed="false" title="Show password">
+                      <span class="password-toggle-icon" aria-hidden="true">&#128065;</span>
+                    </button>
+                  </div>
+                  <div class="password-strength-panel" id="password-strength-panel" data-strength="idle" aria-live="polite">
+                    <div class="password-strength-head">
+                      <span class="password-strength-label" id="password-strength-label">Password strength graph will appear here</span>
+                      <span class="password-strength-score" id="password-strength-score">0%</span>
+                    </div>
+                    <div class="password-strength-meter" id="password-strength-meter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                      <span class="password-strength-fill" id="password-strength-fill"></span>
+                    </div>
+                    <ul class="password-criteria-list">
+                      <li data-rule="length">Minimum 9 characters</li>
+                      <li data-rule="uppercase">At least 1 capital letter</li>
+                      <li data-rule="number">At least 1 number</li>
+                      <li data-rule="underscore">At least 1 underscore (_)</li>
+                      <li data-rule="business">Must not start with business name</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="reg-business-name">Business Name</label>
+                  <input type="text" id="reg-business-name" placeholder="Your Business Name" required>
+                </div>
+                <div class="form-group">
+                  <label for="reg-business-type">Business Type</label>
+                  <select id="reg-business-type" required>
+                    <option value="">Select Business Type</option>
+                    <option value="salon">Salon & Spa</option>
+                    <option value="tuition">Tuition Center</option>
+                    <option value="gym">Gym & Fitness</option>
+                    <option value="clinic">Medical Clinic</option>
+                    <option value="grocery">Grocery Store</option>
+                    <option value="restaurant">Restaurant</option>
+                    <option value="retail">Retail Shop</option>
+                    <option value="consulting">Consulting</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="reg-address">Business Address</label>
+                <input type="text" id="reg-address" placeholder="Complete Business Address" required>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="reg-phone">Phone Number</label>
+                  <input type="tel" id="reg-phone" placeholder="Contact Number" required>
+                </div>
+                <div class="form-group">
+                  <label for="reg-gender">Owner Gender</label>
+                  <select id="reg-gender" required>
+                    <option value="">Select Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="reg-bank">Bank Account Number</label>
+                  <input type="text" id="reg-bank" placeholder="Bank Account Number" required>
+                </div>
+                <div class="form-group">
+                  <label for="reg-ifsc">IFSC Code</label>
+                  <input type="text" id="reg-ifsc" placeholder="Bank IFSC Code" required>
+                </div>
+              </div>
+              <div class="form-group">
+                  <label for="reg-gst">GST Number (Optional)</label>
+                  <input type="text" id="reg-gst" placeholder="GST Number">
+              </div>
+              <div class="form-group">
+                <label for="reg-description">Business Description</label>
+                <textarea id="reg-description" placeholder="Tell us about your business, services, and what makes you unique..." rows="4"></textarea>
+              </div>
+              <div class="form-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" id="terms-agree" required>
+                  <span>I agree to the <a href="#" style="color: var(--neon-blue);">Terms of Service</a> and <a href="#" style="color: var(--neon-blue);">Privacy Policy</a></span>
+                </label>
+              </div>
+              <!-- Submit triggers OTP, not direct submission -->
+              <button type="submit" class="glow-btn register-btn">Complete Registration</button>
+            </form>
+            <div class="register-footer">
+              <p><a href="#" onclick="goBackToPlans()">← Back to Plan Selection</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <span class="logo">Smart<span>Local</span></span>
+      <p class="footer-desc">Empowering India's local businesses to thrive in the digital economy. Built with ❤️ for shop owners, entrepreneurs, and dreamers.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Platform</h4>
+      <a href="index.html">Home</a>
+      <a href="admin.html">Admin</a>
+      <a href="business-register.html">Register Business</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <div class="footer-col">
+      <h4>Business</h4>
+      <a href="#">Salons</a>
+      <a href="#">Gyms</a>
+      <a href="#">Clinics</a>
+      <a href="#">Restaurants</a>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <a href="contact.html">Contact Us</a>
+      <a href="#">Help Center</a>
+      <a href="#">Pricing</a>
+      <a href="#">Terms of Service</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 SmartLocal. All rights reserved. Made in India 🇮🇳</p>
+    <div class="social-links">
+      <a class="social-btn" href="#">📘</a>
+      <a class="social-btn" href="#">📸</a>
+      <a class="social-btn" href="#">🐦</a>
+      <a class="social-btn" href="#">💼</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════════════
+     OTP MODAL
+═══════════════════════════════════════════════════════════ -->
+<div id="otp-overlay" role="dialog" aria-modal="true" aria-labelledby="otp-modal-title">
+  <div class="otp-modal">
+
+    <!-- Sending spinner -->
+    <div class="otp-sending-mask" id="otp-sending-mask">
+      <div class="otp-spinner"></div>
+      <p id="otp-sending-text">Sending OTP to your email…</p>
+    </div>
+
+    <!-- Close -->
+    <button class="otp-close" onclick="closeOtpModal()" aria-label="Close OTP dialog">✕</button>
+
+    <!-- Icon -->
+    <div class="otp-icon-ring">📧</div>
+
+    <!-- Heading -->
+    <h3 id="otp-modal-title">Verify Your Email</h3>
+    <p class="otp-sub">A 6-digit code was sent to<br><strong id="otp-email-display">your email</strong></p>
+
+    <!-- Expired notice -->
+    <div class="otp-expired-notice" id="otp-expired-notice">
+      ⏰ OTP has expired. Please request a new one.
+    </div>
+
+    <!-- Digit inputs -->
+    <div class="otp-digits" id="otp-digits">
+      <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" autocomplete="one-time-code" data-idx="0">
+      <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" data-idx="1">
+      <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" data-idx="2">
+      <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" data-idx="3">
+      <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" data-idx="4">
+      <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" data-idx="5">
+    </div>
+
+    <!-- Status -->
+    <div class="otp-status" id="otp-status"></div>
+
+    <!-- Timer + Bar Graph -->
+    <div class="otp-timer-block">
+      <div class="otp-timer-top">
+        <span class="otp-timer-label">OTP Valid For</span>
+        <span class="otp-countdown" id="otp-countdown">06:00</span>
+      </div>
+      <canvas id="otp-bar-canvas" height="44" aria-hidden="true"></canvas>
+    </div>
+
+    <!-- Verify button -->
+    <button class="otp-verify-btn" id="otp-verify-btn" onclick="verifyOtp()">Verify & Register</button>
+
+    <!-- Resend row -->
+    <div class="otp-resend-row">
+      <span>Didn't receive the code?</span>
+      <button class="otp-resend-btn" id="otp-resend-btn" onclick="resendOtp()" disabled>
+        Resend OTP
+      </button>
+    </div>
+
+    <!-- Attempts -->
+    <div class="otp-attempts" id="otp-attempts"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SCRIPTS
+═══════════════════════════════════════════════════════════ -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="script.js"></script>
+<script>
+/* ================================================================
+   ╔══════════════════════════════════════════════════════════════╗
+   ║          CONFIGURATION — edit these two values              ║
+   ╚══════════════════════════════════════════════════════════════╝
+   Replace the URL with your deployed Google Apps Script Web App URL.
+   See google-sheet-otp.gs for the script to deploy.
+================================================================ */
+const GOOGLE_SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxUldmaj4ajd-cmgVCP9DVUsg4S-IsN9xn44mteEFYD4ThvH-hN4oaSKG3FXdWTL3xs5g/exec';
+
+/* ================================================================
+   PLAN SELECTION (unchanged logic)
+================================================================ */
+let selectedPlan = null;
+const registrationPasswordInput    = document.getElementById('reg-password');
+const registrationBusinessNameInput = document.getElementById('reg-business-name');
+const passwordToggleButton         = document.getElementById('reg-password-toggle');
+const passwordStrengthPanel        = document.getElementById('password-strength-panel');
+const passwordStrengthLabel        = document.getElementById('password-strength-label');
+const passwordStrengthScore        = document.getElementById('password-strength-score');
+const passwordStrengthMeter        = document.getElementById('password-strength-meter');
+const passwordStrengthFill         = document.getElementById('password-strength-fill');
+const passwordCriteriaItems = {
+  length:    document.querySelector('[data-rule="length"]'),
+  uppercase: document.querySelector('[data-rule="uppercase"]'),
+  number:    document.querySelector('[data-rule="number"]'),
+  underscore:document.querySelector('[data-rule="underscore"]'),
+  business:  document.querySelector('[data-rule="business"]')
+};
+
+function getPlanTierClass(planType) {
+  const tier = planType.toLowerCase();
+  if (tier === 'silver' || tier === 'starter')      return 'plan-tier-silver';
+  if (tier === 'gold'   || tier === 'professional') return 'plan-tier-gold';
+  if (tier === 'platinum'|| tier === 'enterprise')  return 'plan-tier-platinum';
+  return 'plan-tier-default';
+}
+
+function selectPlan(planType, showToastNotification = true) {
+  const normalizedPlan = String(planType || '').toLowerCase();
+  if (!['silver', 'gold', 'platinum'].includes(normalizedPlan)) return;
+  selectedPlan = normalizedPlan;
+  document.getElementById('plan-selection').style.display = 'none';
+  document.getElementById('registration-form').style.display = 'block';
+  updateSelectedPlanUI(normalizedPlan);
+  document.getElementById('registration-form').scrollIntoView({ behavior: 'smooth' });
+  if (showToastNotification) {
+    const planLabel = normalizedPlan.charAt(0).toUpperCase() + normalizedPlan.slice(1);
+    showToast(`Plan "${planLabel}" selected!`, 'success');
+  }
+}
+
+function updateSelectedPlanUI(planType) {
+  const planBadge = document.getElementById('selected-plan-display');
+  const normalizedPlan = String(planType || '').toLowerCase();
+  if (!normalizedPlan) {
+    planBadge.textContent = 'None';
+    planBadge.className = 'plan-highlight plan-tier-badge plan-tier-default';
+    return;
+  }
+  const planLabel = normalizedPlan.charAt(0).toUpperCase() + normalizedPlan.slice(1);
+  planBadge.textContent = planLabel;
+  planBadge.className = `plan-highlight plan-tier-badge ${getPlanTierClass(normalizedPlan)}`;
+}
+
+function goBackToPlans() {
+  document.getElementById('registration-form').style.display = 'none';
+  document.getElementById('plan-selection').style.display = 'block';
+  selectedPlan = null;
+  updateSelectedPlanUI('');
+}
+
+/* ================================================================
+   PASSWORD STRENGTH (unchanged logic)
+================================================================ */
+function normalizePasswordPolicyValue(value) {
+  return String(value || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
+function analyzeRegistrationPassword(password, businessName) {
+  const rawPassword = String(password || '');
+  const normalizedPassword = normalizePasswordPolicyValue(rawPassword);
+  const normalizedBusinessName = normalizePasswordPolicyValue(businessName);
+  const businessRulePending = !normalizedBusinessName;
+  const checks = {
+    length:    rawPassword.length >= 9,
+    uppercase: /[A-Z]/.test(rawPassword),
+    number:    /\d/.test(rawPassword),
+    underscore: rawPassword.includes('_'),
+    business:  businessRulePending ? false : !normalizedPassword.startsWith(normalizedBusinessName)
+  };
+  const passedCount = Object.values(checks).filter(Boolean).length;
+  const percentage  = rawPassword ? Math.round((passedCount / 5) * 100) : 0;
+
+  let level = 'idle', label = 'Password strength graph will appear here';
+  let message = 'Use 1 capital letter, 1 number, 1 underscore, and do not start with business name.';
+
+  if (!rawPassword) { /* defaults */ }
+  else if (!checks.length)    { level='weak';   label='Weak password';   message='Password must be at least 9 characters long.'; }
+  else if (!checks.uppercase) { level='weak';   label='Weak password';   message='Password must include at least 1 capital letter.'; }
+  else if (!checks.number)    { level='weak';   label='Weak password';   message='Password must include at least 1 number.'; }
+  else if (!checks.underscore){ level='medium'; label='Medium password'; message='Password must include at least 1 underscore (_).'; }
+  else if (businessRulePending){ level='good';  label='Almost ready';    message='Enter business name to verify the final security rule.'; }
+  else if (!checks.business)  { level='medium'; label='Rename password'; message='Password cannot start with your business name.'; }
+  else if (passedCount === 5) { level='strong'; label='Strong password'; message='All password rules are satisfied.'; }
+  else                        { level='good';   label='Good password';   message='Password is getting stronger.'; }
+
+  return {
+    valid: rawPassword.length > 0 && checks.length && checks.uppercase && checks.number && checks.underscore && !businessRulePending && checks.business,
+    level, label, message, percentage,
+    criteriaStates: {
+      length:    checks.length    ? 'complete' : (rawPassword ? 'fail' : 'idle'),
+      uppercase: checks.uppercase ? 'complete' : (rawPassword ? 'fail' : 'idle'),
+      number:    checks.number    ? 'complete' : (rawPassword ? 'fail' : 'idle'),
+      underscore:checks.underscore? 'complete' : (rawPassword ? 'fail' : 'idle'),
+      business:  businessRulePending ? (rawPassword ? 'pending' : 'idle') : (checks.business ? 'complete' : 'fail')
+    }
+  };
+}
+
+function renderPasswordStrength() {
+  if (!registrationPasswordInput || !passwordStrengthPanel || !passwordStrengthFill) return { valid: false };
+  const analysis = analyzeRegistrationPassword(
+    registrationPasswordInput.value,
+    registrationBusinessNameInput ? registrationBusinessNameInput.value : ''
+  );
+  passwordStrengthPanel.dataset.strength = analysis.level;
+  passwordStrengthLabel.textContent = `${analysis.label} - ${analysis.message}`;
+  passwordStrengthScore.textContent  = `${analysis.percentage}%`;
+  passwordStrengthFill.style.width   = `${analysis.percentage}%`;
+  passwordStrengthMeter.setAttribute('aria-valuenow', String(analysis.percentage));
+  passwordStrengthMeter.setAttribute('aria-label', analysis.label);
+  Object.entries(passwordCriteriaItems).forEach(([key, element]) => {
+    if (!element) return;
+    const state = analysis.criteriaStates[key];
+    element.classList.remove('is-complete','is-fail','is-pending');
+    if (state === 'complete') element.classList.add('is-complete');
+    if (state === 'fail')     element.classList.add('is-fail');
+    if (state === 'pending')  element.classList.add('is-pending');
+  });
+  return analysis;
+}
+
+if (registrationPasswordInput)     registrationPasswordInput.addEventListener('input', renderPasswordStrength);
+if (registrationBusinessNameInput) registrationBusinessNameInput.addEventListener('input', renderPasswordStrength);
+
+if (passwordToggleButton && registrationPasswordInput) {
+  passwordToggleButton.addEventListener('click', function() {
+    const shouldReveal = registrationPasswordInput.type === 'password';
+    registrationPasswordInput.type = shouldReveal ? 'text' : 'password';
+    passwordToggleButton.setAttribute('aria-pressed', shouldReveal ? 'true' : 'false');
+    passwordToggleButton.setAttribute('aria-label',   shouldReveal ? 'Hide password' : 'Show password');
+    passwordToggleButton.setAttribute('title',        shouldReveal ? 'Hide password' : 'Show password');
+    passwordToggleButton.classList.toggle('is-visible', shouldReveal);
+  });
+}
+
+/* ================================================================
+   OTP STATE
+================================================================ */
+const OTP_VALID_SECONDS = 360; // 6 minutes
+let otpState = {
+  code:          null,   // 6-digit string generated client-side
+  email:         '',
+  name:          '',
+  businessName:  '',
+  password:      '',
+  expiresAt:     null,   // Date object
+  timerInterval: null,
+  resendCooldown:null,
+  attempts:      0,
+  maxAttempts:   5,
+  verified:      false,
+  pendingUser:   null,   // full form data kept for final submit after OTP
+};
+
+/* ── Canvas Bar-Graph Timer ── */
+const BAR_TOTAL   = OTP_VALID_SECONDS;  // 360 s
+const BAR_COUNT   = 30;                 // number of bars
+const BAR_GAP     = 3;                  // px gap between bars
+
+let barCanvas, barCtx, barCW, barCH;
+
+function initBarCanvas() {
+  barCanvas = document.getElementById('otp-bar-canvas');
+  if (!barCanvas) return;
+  barCtx = barCanvas.getContext('2d');
+  resizeBarCanvas();
+}
+
+function resizeBarCanvas() {
+  if (!barCanvas) return;
+  barCW = barCanvas.offsetWidth;
+  barCH = barCanvas.offsetHeight;
+  barCanvas.width  = barCW * devicePixelRatio;
+  barCanvas.height = barCH * devicePixelRatio;
+  barCtx.scale(devicePixelRatio, devicePixelRatio);
+}
+
+/* Interpolate colour: cyan → amber → red */
+function barColor(ratio) {
+  // ratio: 1 = full time (cyan), 0 = expired (red)
+  if (ratio > 0.5) {
+    // cyan (#00c8ff) → amber (#ffaa00)  at ratio 0.5–1.0
+    const t = (ratio - 0.5) * 2;          // 0=amber, 1=cyan
+    const r = Math.round((1-t)*255 + t*0);
+    const g = Math.round((1-t)*170 + t*200);
+    const b = Math.round((1-t)*0   + t*255);
+    return `rgb(${r},${g},${b})`;
+  } else {
+    // amber (#ffaa00) → red (#ff2222)  at ratio 0–0.5
+    const t = ratio * 2;                   // 0=red, 1=amber
+    const r = 255;
+    const g = Math.round(t * 170);
+    const b = 0;
+    return `rgb(${r},${g},${b})`;
+  }
+}
+
+function drawBarGraph(secondsLeft) {
+  if (!barCtx) return;
+  barCtx.clearRect(0, 0, barCW, barCH);
+
+  const ratio      = Math.max(0, Math.min(1, secondsLeft / BAR_TOTAL));
+  const secsPerBar = BAR_TOTAL / BAR_COUNT;
+  const barW       = (barCW - BAR_GAP * (BAR_COUNT - 1)) / BAR_COUNT;
+  const maxH       = barCH;
+
+  for (let i = 0; i < BAR_COUNT; i++) {
+    // Each bar represents a segment of the total time
+    // Bar 0 = last-to-die (rightmost in time), Bar N-1 = first-to-die (leftmost)
+    // We draw left-to-right, bar i represents the time window ending at (i+1)*secsPerBar from start
+    // A bar is "alive" if its time hasn't passed yet
+    const barThreshold = BAR_TOTAL - i * secsPerBar; // time remaining when this bar turns off
+    const alive        = secondsLeft >= barThreshold - secsPerBar + 0.01;
+
+    // Height: bars decrease from left → right (left = longest-lived, right = most recently expired)
+    // Each active bar has a height proportional to its position: rightmost alive bars are shorter
+    // This creates a staircase-descending effect
+    const heightRatio = alive
+      ? Math.max(0.08, (i + 1) / BAR_COUNT)   // taller on right, shorter on left
+      : 0.06;                                  // dead bars: tiny stub
+
+    const barH = heightRatio * maxH;
+    const x    = i * (barW + BAR_GAP);
+    const y    = maxH - barH;
+
+    if (alive) {
+      // Glow gradient per bar
+      const barRatio = (BAR_TOTAL - (i * secsPerBar)) / BAR_TOTAL;
+      const col      = barColor(Math.max(0, Math.min(1, ratio * (1 + i / BAR_COUNT))));
+
+      // Glow fill
+      const grad = barCtx.createLinearGradient(x, y, x, maxH);
+      grad.addColorStop(0, col);
+      grad.addColorStop(1, col.replace('rgb', 'rgba').replace(')', ',0.1)'));
+
+      barCtx.beginPath();
+      barCtx.roundRect ? barCtx.roundRect(x, y, barW, barH, [3, 3, 1, 1])
+                       : barCtx.rect(x, y, barW, barH);
+      barCtx.fillStyle = grad;
+      barCtx.fill();
+
+      // Top cap highlight
+      barCtx.beginPath();
+      barCtx.rect(x, y, barW, 2);
+      barCtx.fillStyle = col;
+      barCtx.globalAlpha = 0.9;
+      barCtx.fill();
+      barCtx.globalAlpha = 1;
+    } else {
+      // Dead bar stub
+      barCtx.beginPath();
+      barCtx.rect(x, maxH - barH, barW, barH);
+      barCtx.fillStyle = 'rgba(255,255,255,0.06)';
+      barCtx.fill();
+    }
+  }
+}
+
+function resetBarGraph() {
+  if (!barCtx) return;
+  barCtx.clearRect(0, 0, barCW, barCH);
+}
+
+/* ── Timer ── */
+function startOtpTimer() {
+  clearInterval(otpState.timerInterval);
+  if (!barCanvas) initBarCanvas();
+  resetBarGraph();
+  drawBarGraph(OTP_VALID_SECONDS);
+
+  otpState.timerInterval = setInterval(() => {
+    const now      = Date.now();
+    const msLeft   = Math.max(0, otpState.expiresAt - now);
+    const secsLeft = Math.ceil(msLeft / 1000);
+    const mins     = Math.floor(secsLeft / 60);
+    const secs     = secsLeft % 60;
+    const display  = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+    const countdown = document.getElementById('otp-countdown');
+
+    countdown.textContent = display;
+    countdown.classList.toggle('urgent', secsLeft <= 60);
+
+    drawBarGraph(secsLeft);
+
+    if (secsLeft <= 0) {
+      clearInterval(otpState.timerInterval);
+      onOtpExpired();
+    }
+  }, 1000);
+}
+
+function onOtpExpired() {
+  document.getElementById('otp-expired-notice').classList.add('visible');
+  document.getElementById('otp-verify-btn').disabled = true;
+  document.getElementById('otp-status').textContent  = '';
+  setResendEnabled(true);
+}
+
+/* ── Resend cooldown (30 s) ── */
+function startResendCooldown() {
+  setResendEnabled(false);
+  let secs = 30;
+  const btn = document.getElementById('otp-resend-btn');
+  btn.textContent = `Resend in ${secs}s`;
+  clearInterval(otpState.resendCooldown);
+  otpState.resendCooldown = setInterval(() => {
+    secs--;
+    if (secs <= 0) {
+      clearInterval(otpState.resendCooldown);
+      setResendEnabled(true);
+    } else {
+      btn.textContent = `Resend in ${secs}s`;
+    }
+  }, 1000);
+}
+
+function setResendEnabled(enabled) {
+  const btn = document.getElementById('otp-resend-btn');
+  btn.disabled    = !enabled;
+  btn.textContent = enabled ? 'Resend OTP' : btn.textContent;
+}
+
+/* ── Generate OTP ── */
+function generateOtp() {
+  return String(Math.floor(100000 + Math.random() * 900000));
+}
+
+/* ── Mask password for sheet ── */
+function maskPassword(pwd) {
+  if (!pwd || pwd.length < 2) return '******';
+  return pwd[0] + '*'.repeat(pwd.length - 2) + pwd[pwd.length - 1];
+}
+
+/* ── Send OTP to Google Sheet & trigger email via Apps Script ── */
+async function sendOtpToSheet(otp, name, email, businessName, password) {
+  const now      = new Date();
+  const dateStr  = now.toLocaleDateString('en-IN', { day:'2-digit', month:'2-digit', year:'numeric' });
+  const timeStr  = now.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+
+  const payload = {
+    action:       'storeOtp',
+    otp,
+    name,
+    email,
+    businessName,
+    passwordMasked: maskPassword(password),
+    generatedDate: dateStr,
+    generatedTime: timeStr,
+  };
+
+  const resp = await fetch(GOOGLE_SHEET_SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+    mode: 'no-cors'  // Apps Script requires no-cors for POST from browser
+  });
+  // no-cors means we can't read the response; that's expected.
+}
+
+/* ── Verify OTP against Sheet ── */
+async function verifyOtpFromSheet(otp, email) {
+  const url = `${GOOGLE_SHEET_SCRIPT_URL}?action=verifyOtp&otp=${encodeURIComponent(otp)}&email=${encodeURIComponent(email)}`;
+  const resp = await fetch(url);
+  if (!resp.ok) throw new Error('Sheet verification failed');
+  const data = await resp.json();
+  return data; // { valid: true/false, message: '...' }
+}
+
+/* ── Open OTP modal ── */
+function openOtpModal(email, name, businessName, password, pendingUser) {
+  const otp = generateOtp();
+  otpState.code        = otp;
+  otpState.email       = email;
+  otpState.name        = name;
+  otpState.businessName= businessName;
+  otpState.password    = password;
+  otpState.expiresAt   = Date.now() + OTP_VALID_SECONDS * 1000;
+  otpState.attempts    = 0;
+  otpState.verified    = false;
+  otpState.pendingUser = pendingUser;
+
+  // Reset UI
+  clearOtpDigits();
+  setOtpStatus('','');
+  document.getElementById('otp-expired-notice').classList.remove('visible');
+  document.getElementById('otp-verify-btn').disabled = false;
+  document.getElementById('otp-attempts').textContent = '';
+  document.getElementById('otp-email-display').textContent = email;
+  document.getElementById('otp-countdown').textContent = '06:00';
+  document.getElementById('otp-countdown').classList.remove('urgent');
+
+  // Show overlay
+  document.getElementById('otp-overlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+
+  // Init canvas after overlay is visible (so offsetWidth is available)
+  requestAnimationFrame(() => { initBarCanvas(); drawBarGraph(OTP_VALID_SECONDS); });
+
+  // Show sending spinner, send to sheet, then hide spinner
+  showSendingMask('Sending OTP to your email…');
+  sendOtpToSheet(otp, name, email, businessName, password)
+    .then(() => {
+      hideSendingMask();
+      startOtpTimer();
+      startResendCooldown();
+      // Focus first digit
+      setTimeout(() => {
+        const first = document.querySelector('.otp-digit[data-idx="0"]');
+        if (first) first.focus();
+      }, 100);
+    })
+    .catch(() => {
+      hideSendingMask();
+      // Still start timer even if sheet write failed — OTP is still in memory
+      startOtpTimer();
+      startResendCooldown();
+      setOtpStatus('Warning: could not reach verification server. OTP still valid for this session.','info');
+    });
+}
+
+function closeOtpModal() {
+  clearInterval(otpState.timerInterval);
+  clearInterval(otpState.resendCooldown);
+  document.getElementById('otp-overlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+/* ── Spinner helpers ── */
+function showSendingMask(msg) {
+  document.getElementById('otp-sending-text').textContent = msg;
+  document.getElementById('otp-sending-mask').classList.add('active');
+}
+function hideSendingMask() {
+  document.getElementById('otp-sending-mask').classList.remove('active');
+}
+
+/* ── Status ── */
+function setOtpStatus(msg, type) {
+  const el = document.getElementById('otp-status');
+  el.textContent  = msg;
+  el.className    = 'otp-status' + (type ? ' ' + type : '');
+}
+
+/* ── Digit input helpers ── */
+function clearOtpDigits() {
+  document.querySelectorAll('.otp-digit').forEach(inp => {
+    inp.value = '';
+    inp.classList.remove('filled','error-shake');
+  });
+}
+
+function getOtpValue() {
+  return Array.from(document.querySelectorAll('.otp-digit')).map(i => i.value).join('');
+}
+
+function shakeDigits() {
+  document.querySelectorAll('.otp-digit').forEach(inp => {
+    inp.classList.remove('error-shake');
+    void inp.offsetWidth; // reflow to restart animation
+    inp.classList.add('error-shake');
+  });
+}
+
+/* ── Digit navigation ── */
+document.getElementById('otp-digits').addEventListener('input', function(e) {
+  const inp = e.target;
+  if (!inp.classList.contains('otp-digit')) return;
+  const val = inp.value.replace(/\D/g,'');
+  inp.value = val.slice(-1);
+  inp.classList.toggle('filled', !!inp.value);
+
+  if (inp.value) {
+    const idx  = parseInt(inp.dataset.idx);
+    const next = document.querySelector(`.otp-digit[data-idx="${idx + 1}"]`);
+    if (next) next.focus();
+  }
+});
+
+document.getElementById('otp-digits').addEventListener('keydown', function(e) {
+  const inp = e.target;
+  if (!inp.classList.contains('otp-digit')) return;
+  if (e.key === 'Backspace' && !inp.value) {
+    const idx  = parseInt(inp.dataset.idx);
+    const prev = document.querySelector(`.otp-digit[data-idx="${idx - 1}"]`);
+    if (prev) { prev.value = ''; prev.classList.remove('filled'); prev.focus(); }
+  }
+  if (e.key === 'Enter') verifyOtp();
+});
+
+document.getElementById('otp-digits').addEventListener('paste', function(e) {
+  e.preventDefault();
+  const text = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g,'').slice(0,6);
+  const inputs = document.querySelectorAll('.otp-digit');
+  text.split('').forEach((ch, i) => {
+    if (inputs[i]) { inputs[i].value = ch; inputs[i].classList.add('filled'); }
+  });
+  const nextEmpty = Array.from(inputs).find(i => !i.value);
+  if (nextEmpty) nextEmpty.focus();
+  else inputs[5].focus();
+});
+
+/* ── Verify OTP ── */
+async function verifyOtp() {
+  if (Date.now() > otpState.expiresAt) { onOtpExpired(); return; }
+
+  otpState.attempts++;
+  const remaining = otpState.maxAttempts - otpState.attempts;
+  const entered   = getOtpValue();
+
+  if (entered.length < 6) {
+    setOtpStatus('Please enter all 6 digits.', 'error');
+    return;
+  }
+
+  // First verify against sheet for extra security
+  document.getElementById('otp-verify-btn').disabled = true;
+  setOtpStatus('Verifying…', 'info');
+
+  // Try sheet verification; fall back to in-memory match
+  let valid = false;
+  try {
+    const result = await verifyOtpFromSheet(entered, otpState.email);
+    valid = result.valid;
+  } catch (err) {
+    // Sheet unavailable — fall back to in-memory
+    valid = (entered === otpState.code);
+  }
+
+  if (!valid) {
+    shakeDigits();
+    clearOtpDigits();
+    if (remaining <= 0) {
+      setOtpStatus('Too many wrong attempts. Please request a new OTP.', 'error');
+      document.getElementById('otp-verify-btn').disabled = true;
+      setResendEnabled(true);
+      document.getElementById('otp-attempts').textContent = '';
+    } else {
+      setOtpStatus(`Invalid OTP. ${remaining} attempt${remaining !== 1 ? 's' : ''} remaining.`, 'error');
+      document.getElementById('otp-verify-btn').disabled = false;
+      document.getElementById('otp-attempts').textContent = `Attempts remaining: ${remaining}`;
+      document.querySelector('.otp-digit[data-idx="0"]').focus();
+    }
+    return;
+  }
+
+  // ✅ OTP correct — proceed to final MongoDB submission
+  otpState.verified = true;
+  clearInterval(otpState.timerInterval);
+  setOtpStatus('✓ Email verified! Completing registration…', 'success');
+  document.getElementById('otp-verify-btn').disabled = true;
+
+  await submitToMongoDB(otpState.pendingUser);
+}
+
+/* ── Resend OTP ── */
+async function resendOtp() {
+  const newOtp = generateOtp();
+  otpState.code      = newOtp;
+  otpState.expiresAt = Date.now() + OTP_VALID_SECONDS * 1000;
+  otpState.attempts  = 0;
+
+  clearOtpDigits();
+  document.getElementById('otp-expired-notice').classList.remove('visible');
+  document.getElementById('otp-verify-btn').disabled = false;
+  document.getElementById('otp-attempts').textContent = '';
+  document.getElementById('otp-countdown').textContent = '06:00';
+  document.getElementById('otp-countdown').classList.remove('urgent');
+  setOtpStatus('New OTP sent!', 'success');
+  resetBarGraph();
+
+  showSendingMask('Resending OTP…');
+  try {
+    await sendOtpToSheet(newOtp, otpState.name, otpState.email, otpState.businessName, otpState.password);
+  } catch (_) {}
+  hideSendingMask();
+
+  startOtpTimer();
+  startResendCooldown();
+  document.querySelector('.otp-digit[data-idx="0"]').focus();
+}
+
+/* ── Final MongoDB submit (original logic preserved) ── */
+async function submitToMongoDB(user) {
+  try {
+    const response = await fetch('/api/businesses', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(user)
+    });
+
+    if (!response.ok) {
+      const payload = await response.json().catch(() => ({}));
+      const message = payload?.error || 'Registration failed. Please try again.';
+      setOtpStatus(message, 'error');
+      document.getElementById('otp-verify-btn').disabled = false;
+      return;
+    }
+
+    const payload = await response.json().catch(() => ({}));
+    if (!payload?.user) {
+      setOtpStatus('Registration saved, but confirmation unavailable.', 'error');
+      return;
+    }
+  } catch (error) {
+    setOtpStatus('Server unavailable. Please try again later.', 'error');
+    document.getElementById('otp-verify-btn').disabled = false;
+    return;
+  }
+
+  closeOtpModal();
+
+  // Redirect to confirmation (original logic)
+  const ref = generateFormRef('REG');
+  window.location.href = `confirmation.html?type=register&plan=${encodeURIComponent(selectedPlan)}&ref=${encodeURIComponent(ref)}&name=${encodeURIComponent(user.name)}&userid=${encodeURIComponent(user.userid)}&business=${encodeURIComponent(user.business?.name || '')}`;
+}
+
+/* ================================================================
+   FORM SUBMIT — now triggers OTP instead of direct submit
+================================================================ */
+document.getElementById('business-register-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  if (!selectedPlan) {
+    showToast('Please select a plan first.', 'error');
+    return;
+  }
+
+  const password     = document.getElementById('reg-password').value;
+  const businessName = document.getElementById('reg-business-name').value.trim();
+  const passwordAnalysis = renderPasswordStrength();
+  if (!passwordAnalysis.valid) {
+    showToast(passwordAnalysis.message, 'error');
+    document.getElementById('reg-password').focus();
+    return;
+  }
+
+  // Build pending user object (same as original)
+  const user = {
+    userid: document.getElementById('reg-userid').value.trim(),
+    name:   document.getElementById('reg-name').value.trim(),
+    email:  document.getElementById('reg-email').value.trim(),
+    password,
+    plan:        selectedPlan,
+    planDetails: getPlanDetails(selectedPlan),
+    business: {
+      name:        businessName,
+      type:        document.getElementById('reg-business-type').value,
+      address:     document.getElementById('reg-address').value.trim(),
+      phone:       document.getElementById('reg-phone').value.trim(),
+      gender:      document.getElementById('reg-gender').value,
+      bank:        document.getElementById('reg-bank').value.trim(),
+      ifsc:        document.getElementById('reg-ifsc').value.trim(),
+      gst:         document.getElementById('reg-gst').value.trim(),
+      description: document.getElementById('reg-description').value.trim()
+    },
+    registrationDate: new Date().toISOString(),
+    status: 'active'
+  };
+
+  // ── Open OTP modal instead of submitting immediately ──
+  openOtpModal(user.email, user.name, businessName, password, user);
+});
+
+/* ================================================================
+   HELPERS (unchanged from original)
+================================================================ */
+function getPlanDetails(planType) {
+  const plans = {
+    silver:   { name:'Silver',   price:999,  features:['Digital Business Card','Basic Analytics','Customer Management','Mobile App Access','Email Support'] },
+    gold:     { name:'Gold',     price:2499, features:['Everything in Silver','Advanced Analytics','Sales Reports & PDF','Currency Converter','Priority Support','Custom Branding','Marketing Tools'] },
+    platinum: { name:'Platinum', price:4999, features:['Everything in Gold','White-label Solution','API Access','Multi-location Support','Advanced Integrations','Dedicated Account Manager','Custom Development','24/7 Phone Support'] }
+  };
+  return plans[planType] || plans.gold;
+}
+
+function readQueryParam(name) {
+  return new URLSearchParams(window.location.search).get(name);
+}
+
+function tryAutoSelectPlan() {
+  const urlPlan = readQueryParam('plan');
+  if (!urlPlan) { updateSelectedPlanUI(''); return; }
+  const normalized = urlPlan.toLowerCase();
+  if (['silver','gold','platinum'].includes(normalized)) selectPlan(normalized, false);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  tryAutoSelectPlan();
+});
+
+// Auto-generate User ID suggestion (unchanged)
+document.getElementById('reg-business-name').addEventListener('input', function() {
+  const businessName = this.value.toLowerCase().replace(/[^a-z0-9]/g, '');
+  if (businessName && !document.getElementById('reg-userid').value) {
+    document.getElementById('reg-userid').value = businessName + Math.floor(Math.random() * 100);
+  }
+});
+
+renderPasswordStrength();
+</script>
+</body>
+</html>

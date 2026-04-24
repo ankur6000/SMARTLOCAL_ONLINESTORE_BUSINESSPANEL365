@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-9">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Titan Terminal Live</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #010204; color: #cbd5e1; font-family: 'Inter', sans-serif; overflow-x: hidden; margin: 0; }
+        .cursive-gold { font-family: 'Dancing Script', cursive; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .animate-spin-slow { animation: spin-slow 20s linear infinite; }
+        @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+        .animate-shimmer { position: relative; overflow: hidden; }
+        .animate-shimmer::after { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); animation: shimmer 2s infinite; }
+        @keyframes energy-flow { 0%, 100% { filter: brightness(1); transform: scaleY(1); } 50% { filter: brightness(1.5); transform: scaleY(1.05); } }
+        .animate-energy-flow { animation: energy-flow 2s ease-in-out infinite; transform-origin: bottom; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .tabular-nums { font-variant-numeric: tabular-nums; }
+        
+        /* Specialized Glows */
+        .glow-wealth { text-shadow: 0 0 15px #22d3ee, 0 0 30px #0891b2; }
+        .glow-platinum { text-shadow: 0 0 20px rgba(255,255,255,0.8), 0 0 40px rgba(148,163,184,0.6); }
+        .glow-gold { text-shadow: 0 0 25px #fbbf24, 0 0 50px #d97706; }
+        .glow-silver { text-shadow: 0 0 12px #e2e8f0, 0 0 25px #94a3b8; color: #f1f5f9; }
+        
+        /* Card Signature Glows - Added padding to prevent clipping */
+        .glow-visa { text-shadow: 0 0 20px #3b82f6, 0 0 40px #1d4ed8; filter: drop-shadow(0 0 8px #3b82f6); color: #60a5fa; padding-right: 4px; }
+        .glow-mastercard { filter: drop-shadow(0 0 20px #ef4444); }
+        .glow-rupay { text-shadow: 0 0 20px rgba(59,130,246,0.5), 0 0 40px rgba(249,115,22,0.3); filter: drop-shadow(0 0 10px rgba(59,130,246,0.6)); padding-right: 8px; }
+
+        .equal-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; width: 100%; }
+    </style>
+</head>
+<body>
+    <div class="fixed inset-0 pointer-events-none z-0">
+        <div class="absolute top-0 right-0 w-[800px] h-[800px] bg-blue-600/[0.03] rounded-full blur-[150px]"></div>
+        <div class="absolute bottom-0 left-0 w-[800px] h-[800px] bg-indigo-600/[0.03] rounded-full blur-[150px]"></div>
+    </div>
+
+    <div id="initial-loader" class="fixed inset-0 z-[100] flex items-center justify-center bg-[#010204] backdrop-blur-3xl">
+        <div class="flex flex-col items-center">
+            <div class="w-36 h-36 relative mb-12">
+                <div class="absolute inset-0 border-[5px] border-blue-500/10 rounded-[3rem] animate-pulse"></div>
+                <div class="absolute inset-0 border-[5px] border-t-blue-600 rounded-[3rem] animate-spin"></div>
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-blue-600"><i data-lucide="shield-check" style="width: 56px; height: 56px;"></i></div>
+            </div>
+            <div class="text-blue-600 font-black tracking-[1em] text-[14px] animate-pulse uppercase italic">Syncing Titan Database...</div>
+        </div>
+    </div>
+
+    <div id="app-root" class="relative z-10 min-h-screen"></div>
+
+    <script>
+        const API_URL = "https://script.google.com/macros/s/AKfycby1Y9ECMlnC-UUx6BZFnr-TRJ3jkGNgtHzsOs5WnkgVawgwlhzV_fQP7yEE7ijzGnkG/exec";
+        let allData = [];
+        let selectedAccount = null;
+        let currentView = 'search';
+        let isSyncingData = false;
+
+        const formatBalance = (val) => {
+            if (!val) return "0.00";
+            const clean = String(val).replace(/[^0-9.-]/g, '');
+            const num = parseFloat(clean);
+            return isNaN(num) ? "0.00" : num.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        };
+
+        const maskData = (val) => {
+            if (!val || val === "N/A") return "---";
+            const s = String(val).trim();
+            if (s.length <= 4) return s;
+            if (s.includes('@')) {
+                const p = s.split('@');
+                return "••••" + p[0].slice(-2) + "@" + p[1];
+            }
+            return "•••• " + s.slice(-4);
+        };
+
+        const formatDateOnly = (d) => { 
+            if (!d || d === "N/A" || d === "") return "---"; 
+            if (d instanceof Date) return d.toLocaleDateString('en-GB');
+            return String(d).includes('T') ? d.split('T')[0] : String(d).split(' ')[0]; 
+        };
+
+        const getTier = (v = "") => {
+            const up = v.toUpperCase();
+            if (up.includes("WEALTH")) return { label: "WEALTH", glow: "from-cyan-400 via-blue-500 to-indigo-600", textShadow: "0 0 15px #22d3ee, 0 0 30px #0891b2", accent: "text-cyan-400", bgGlow: "bg-cyan-500/20", nodeColor: "from-cyan-400 to-blue-600" };
+            if (up.includes("PLATINUM")) return { label: "PLATINUM", glow: "from-white via-slate-300 to-white", textShadow: "0 0 20px rgba(255,255,255,0.8), 0 0 40px rgba(148,163,184,0.6)", accent: "text-white", bgGlow: "bg-white/10", nodeColor: "from-slate-100 to-slate-400" };
+            if (up.includes("GOLD")) return { label: "GOLD", glow: "from-yellow-400 via-orange-500 to-yellow-600", textShadow: "0 0 25px #fbbf24, 0 0 50px #d97706", accent: "text-yellow-500", bgGlow: "bg-yellow-500/20", nodeColor: "from-yellow-400 to-orange-600" };
+            if (up.includes("SILVER")) return { label: "SILVER", glow: "from-slate-400 via-slate-200 to-slate-500", textShadow: "0 0 10px #f1f5f9, 0 0 20px #94a3b8", accent: "text-slate-300", bgGlow: "bg-slate-400/10", nodeColor: "from-slate-400 to-slate-200" };
+            return { label: up || "BASIC", glow: "from-blue-600 via-indigo-600 to-blue-800", textShadow: "none", accent: "text-blue-500", bgGlow: "bg-blue-500/10", nodeColor: "from-blue-500 to-indigo-500" };
+        };
+
+        const getBars = (bal) => {
+            const raw = String(bal || "0").replace(/[^0-9]/g, '');
+            const seed = (raw + '1357924680').slice(0, 12);
+            return seed.split('').map(d => Math.min(20 + (parseInt(d) * 6) + Math.min(parseFloat(raw || 0)/500000, 30), 100));
+        };
+
+        const renderApp = () => {
+            const root = document.getElementById('app-root');
+            if (currentView === 'dashboard' && document.getElementById('dashboard-main')) {
+                updateDashboardUI();
+                return;
+            }
+            root.innerHTML = currentView === 'search' ? renderSearch() : renderDashboard();
+            lucide.createIcons();
+        };
+
+        const updateDashboardUI = () => {
+            if (!selectedAccount) return;
+            const acc = selectedAccount;
+            const updates = { 
+                'curr-balance': formatBalance(acc.currentBalance), 
+                'open-balance': "₹" + formatBalance(acc.openingBalance), 
+                'penal-charge': "₹" + formatBalance(acc.penalCharge), 
+                'remarks-text': '"' + acc.remarks + '"',
+                'pan-val': maskData(acc.pan),
+                'aadhaar-val': maskData(acc.aadhaar)
+            };
+            for (let id in updates) { 
+                const el = document.getElementById(id); 
+                if (el && el.innerText !== updates[id]) el.innerText = updates[id]; 
+            }
+            const dot = document.getElementById('sync-indicator-main');
+            if (dot) {
+                if (isSyncingData) { dot.classList.add('bg-blue-400', 'animate-ping'); dot.classList.remove('bg-green-500'); }
+                else { dot.classList.add('bg-green-500'); dot.classList.remove('bg-blue-400', 'animate-ping'); }
+            }
+        };
+
+        const renderSearch = () => `
+            <div class="flex flex-col items-center justify-center min-h-screen p-6 animate-in fade-in duration-1000">
+                <div class="w-full max-w-xl">
+                    <div class="flex flex-col items-center mb-16 text-center">
+                        <div class="w-24 h-24 bg-gradient-to-tr from-blue-600 to-indigo-700 rounded-[2rem] flex items-center justify-center shadow-[0_0_60px_rgba(37,99,235,0.2)] mb-10 border border-white/10 group"><i data-lucide="shield-check" class="w-12 h-12 text-white transition-transform group-hover:scale-110"></i></div>
+                        <h1 class="text-6xl font-black text-white tracking-tighter mb-4 italic uppercase">TITAN TERMINAL</h1>
+                        <div class="flex items-center gap-4 text-blue-500/40 font-bold tracking-[0.5em] text-[10px] uppercase"><span>Supreme V16.0</span><div class="w-1 h-1 bg-slate-800 rounded-full"></div><span>Node Pulse</span></div>
+                    </div>
+                    <div class="bg-[#0d1117]/60 backdrop-blur-3xl border border-white/5 p-12 rounded-[3.5rem] shadow-2xl relative overflow-hidden group">
+                        <div class="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-blue-500/30 to-transparent"></div>
+                        <div class="space-y-10 relative z-10">
+                            <div class="space-y-5">
+                                <label class="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] ml-1">Initiate Trace Protocol</label>
+                                <div class="relative"><i data-lucide="search" class="absolute left-6 top-1/2 -translate-y-1/2 text-slate-600 w-6 h-6"></i><input type="text" id="search-input" autoFocus placeholder="Enter Mobile, Account, or ID" class="w-full bg-black/40 border border-white/5 rounded-3xl py-7 pl-16 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition-all text-white font-medium text-xl placeholder:text-slate-800" onkeydown="if(event.key==='Enter') handleTrack()"></div>
+                            </div>
+                            <button onclick="handleTrack()" class="w-full py-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:brightness-110 text-white font-black rounded-3xl active:scale-[0.98] transition-all tracking-[0.2em] uppercase text-sm">AUTHORIZE ACCESS</button>
+                            <div id="error-box" class="hidden flex items-center gap-3 text-red-500 text-[12px] font-black justify-center bg-red-500/10 p-6 rounded-2xl border border-red-500/20 animate-bounce uppercase text-center"><i data-lucide="shield-alert" class="w-5 h-5 shrink-0"></i><span id="error-message"></span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        const renderDashboard = () => {
+            const acc = selectedAccount;
+            const theme = getTier(acc.variant);
+            const bars = getBars(acc.currentBalance);
+            const initials = acc.name.replace(/MR\.|MRS\.|MS\./gi, '').trim().split(' ').filter(n => n).map(n => n[0]).join('').toUpperCase().slice(0, 2);
+            return `
+            <div id="dashboard-main" class="relative flex flex-col h-screen animate-in fade-in duration-700">
+                <header class="px-12 py-7 flex items-center justify-between border-b border-white/5 bg-black/50 backdrop-blur-3xl">
+                    <button onclick="logout()" class="flex items-center gap-4 text-slate-500 hover:text-white group transition-all"><div class="p-3 rounded-2xl bg-white/5 group-hover:bg-blue-600 border border-white/5 shadow-inner"><i data-lucide="arrow-left" class="w-5 h-5"></i></div><span class="text-[11px] font-black uppercase tracking-[0.2em]">Close Session</span></button>
+                    <div class="flex items-center gap-6">
+                        <div class="flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full border border-white/10 opacity-100"><div id="sync-indicator-main" class="w-1.5 h-1.5 bg-green-500 rounded-full"></div><span class="text-[9px] font-bold uppercase tracking-widest text-blue-400">Syncing Live</span></div>
+                        <div class="w-16 h-16 rounded-[1.5rem] bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white border border-white/10 shadow-xl relative overflow-hidden"><i data-lucide="shield-check" class="w-8 h-8"></i></div>
+                    </div>
+                </header>
+                <main class="flex-1 overflow-y-auto p-8 md:p-12 scrollbar-hide">
+                    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12">
+                        <div class="lg:col-span-4 space-y-10">
+                            <div class="relative group">
+                                <div class="absolute -inset-4 bg-gradient-to-r ${theme.glow} rounded-[4rem] blur-3xl opacity-20 animate-pulse"></div>
+                                <div class="relative bg-[#0d1117]/80 backdrop-blur-3xl border border-white/5 rounded-[4rem] p-12 flex flex-col items-center text-center overflow-hidden shadow-2xl">
+                                    <div class="relative w-44 h-44 mb-10 transition-transform duration-700 hover:scale-105">
+                                        <div class="absolute inset-0 bg-gradient-to-tr ${theme.glow} rounded-[3.2rem] blur-xl opacity-60 animate-spin-slow"></div>
+                                        <div class="relative h-full w-full bg-[#0a0c10]/95 backdrop-blur-3xl rounded-[2.8rem] border border-white/10 flex items-center justify-center shadow-2xl"><span class="text-8xl font-black tracking-tighter ${theme.accent}">${initials}</span></div>
+                                    </div>
+                                    <h2 class="text-4xl font-black text-white mb-6 tracking-tighter italic leading-none uppercase">${acc.name}</h2>
+                                    <div class="mb-12">${renderVariantBadge(acc.variant, theme)}</div>
+                                    <div class="w-full space-y-5">
+                                        <div class="p-6 bg-white/[0.02] rounded-[2rem] border border-white/5 text-left"><div class="text-[9px] font-black text-slate-600 uppercase tracking-[0.3em] mb-2">Identity Node</div><div class="text-xl font-mono text-white tracking-widest tabular-nums">${maskData(acc.custId)}</div></div>
+                                        <div class="p-6 bg-white/[0.02] rounded-[2rem] border border-white/5 text-left"><div class="text-[9px] font-black text-slate-600 uppercase tracking-[0.3em] mb-2">Mobile Registry</div><div class="text-xl font-mono text-white tracking-widest italic tabular-nums">${maskData(acc.mobile)}</div></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-[#0d1117]/60 border border-white/5 rounded-[3rem] p-10 backdrop-blur-md">
+                                <h4 class="text-[11px] font-black uppercase tracking-[0.4em] text-slate-600 mb-8 flex items-center gap-4"><i data-lucide="activity" class="text-blue-500 w-5 h-5"></i> Terminal Logs</h4>
+                                <div class="p-5 bg-blue-500/5 rounded-3xl border border-blue-500/10"><p class="text-[10px] text-blue-400 font-black mb-2 uppercase tracking-[0.2em]">Validation Key</p><p id="remarks-text" class="text-[11px] text-slate-400 italic font-medium leading-relaxed">"${acc.remarks}"</p></div>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-8 space-y-12">
+                            <div class="relative group">
+                                <div class="absolute -inset-1 bg-gradient-to-r ${theme.glow} rounded-[4.5rem] blur-xl opacity-10 transition-all duration-1000"></div>
+                                <div class="relative bg-gradient-to-br from-[#12161f] to-[#0a0c10] border border-white/5 rounded-[4rem] p-16 overflow-hidden shadow-2xl">
+                                    <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/[0.04] rounded-full blur-[120px] -mr-64 -mt-64"></div>
+                                    <div class="relative z-10">
+                                        <h3 class="text-[11px] font-black text-slate-600 uppercase tracking-[0.6em] mb-8 flex items-center gap-4"><i data-lucide="wallet" class="text-blue-500 w-5 h-5"></i> Liquid Net Worth</h3>
+                                        <div class="flex items-baseline gap-5"><span class="text-4xl font-light text-blue-600">₹</span><span id="curr-balance" class="text-8xl font-black text-white tracking-tighter drop-shadow-lg tabular-nums">${formatBalance(acc.currentBalance)}</span></div>
+                                        <div class="mt-12 flex flex-wrap gap-5"><div class="px-6 py-3 bg-white/[0.03] rounded-2xl border border-white/5 text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-3"><i data-lucide="hash" class="w-3 h-3 text-blue-500/50"></i> ACC: ${maskData(acc.accNo)}</div><div class="px-6 py-3 bg-red-500/[0.03] rounded-2xl border border-red-500/10 text-[10px] font-black text-red-500/80 tracking-widest uppercase flex items-center gap-3"><i data-lucide="shield-alert" class="w-3 h-3 text-red-500"></i> PENAL: <span id="penal-charge">₹${formatBalance(acc.penalCharge)}</span></div></div>
+                                        <div class="equal-grid-4 pt-16 border-t border-white/5 mt-16">
+                                            <div><p class="text-[10px] font-black text-slate-600 uppercase tracking-[0.3em] flex items-center gap-2 mb-3 font-bold"><i data-lucide="scale" class="w-3 h-3"></i> Opening</p><p id="open-balance" class="text-xl font-mono text-slate-400 tabular-nums whitespace-nowrap font-bold">₹${formatBalance(acc.openingBalance)}</p></div>
+                                            <div><p class="text-[10px] font-black text-slate-600 uppercase tracking-[0.3em] mb-3 font-bold">PAN Registry</p><p id="pan-val" class="text-xl font-mono text-slate-200 tabular-nums font-bold text-wrap">${maskData(acc.pan)}</p></div>
+                                            <div><p class="text-[10px] font-black text-slate-600 uppercase tracking-[0.3em] mb-3 font-bold">Aadhaar Node</p><p id="aadhaar-val" class="text-xl font-mono text-slate-200 tabular-nums font-bold text-wrap">${maskData(acc.aadhaar)}</p></div>
+                                            <div><p class="text-[10px] font-black text-slate-600 uppercase tracking-[0.3em] mb-3 font-bold">Card Type</p><div class="flex items-center pt-1 h-8">${renderSmallLogo(acc.card)}</div></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                <div class="bg-[#0d1117]/60 border border-white/5 rounded-[3.5rem] p-12 shadow-xl backdrop-blur-sm group hover:border-blue-500/20 transition-all">
+                                    <h4 class="text-[11px] font-black uppercase tracking-[0.4em] text-slate-600 mb-12 flex items-center gap-6"><i data-lucide="user" class="text-blue-500 w-8 h-8"></i> Secure Registry</h4>
+                                    <div class="space-y-8">
+                                        ${renderRow("DOB Registry", formatDateOnly(acc.dob))}${renderRow("Registry Age", acc.age + " YRS")}${renderRow("Email Node", maskData(acc.email), true)}${renderRow("Joint Holder", acc.joint || 'SINGLE', false, "link-2")}${renderRow("Asset Class", acc.accType, false, "layers", theme.accent)}${renderRow("Nominee", acc.nominee || '---')}
+                                    </div>
+                                </div>
+                                <div class="bg-[#0d1117]/60 border border-white/5 rounded-[3.5rem] p-12 shadow-xl relative overflow-hidden backdrop-blur-sm group hover:border-emerald-500/20 transition-all">
+                                    <h4 class="text-[11px] font-black uppercase tracking-[0.4em] text-slate-600 mb-12 flex items-center gap-6"><i data-lucide="trending-up" class="text-emerald-500 w-8 h-8"></i> Velocity Node</h4>
+                                    <div class="flex gap-5 items-end h-[140px] px-2 mb-8 relative z-10">
+                                        ${bars.map(h => `<div class="flex-1 bg-white/[0.03] rounded-t-2xl relative overflow-hidden h-full"><div class="absolute bottom-0 w-full bg-gradient-to-t rounded-t-2xl opacity-50 transition-all duration-700" style="height: ${h}%"></div></div>`).join('')}
+                                    </div>
+                                    <p class="text-[9px] text-center text-slate-800 uppercase tracking-[0.5em] animate-pulse mt-10">Node Live Monitor</p>
+                                </div>
+                            </div>
+                            <div class="bg-[#0d1117]/60 border border-white/5 rounded-[4rem] p-16 shadow-2xl relative overflow-hidden group hover:border-blue-500/10 transition-all">
+                                <h4 class="text-[13px] font-black uppercase tracking-[0.6em] text-slate-500 mb-16 italic flex items-center gap-6"><i data-lucide="trending-up" class="text-blue-500 w-9 h-9"></i> Node Velocity Waveform</h4>
+                                <div class="flex gap-6 items-end h-[200px] px-4 relative z-10">
+                                    ${bars.map((h, i) => `<div class="flex-1 bg-white/[0.05] rounded-t-3xl relative overflow-hidden h-full"><div class="absolute bottom-0 w-full bg-gradient-to-t ${theme.nodeColor} rounded-t-3xl opacity-80 animate-energy-flow shadow-[0_0_20px_rgba(34,197,94,0.3)]" style="height: ${h}%; animation-delay: ${i*0.1}s"></div><div class="absolute top-0 left-0 w-full h-[3px] bg-white opacity-20 blur-[1px]"></div></div>`).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+                <footer class="px-12 py-8 border-t border-white/5 bg-black/60 backdrop-blur-3xl flex justify-between items-center text-[10px] font-black text-slate-800 uppercase tracking-[0.7em] z-20">
+                    <div class="flex items-center gap-12">
+                        <span class="flex items-center gap-4"><div class="w-2.5 h-2.5 bg-green-500 rounded-full shadow-[0_0_10px_rgba(34,197,94,0.4)]"></div>Titan Sync Active</span>
+                        <span class="flex items-center gap-3"><i data-lucide="globe" class="w-4 h-4"></i> Global Encryption Node</span>
+                    </div>
+                    <div class="text-blue-900/30 font-black italic uppercase tracking-widest">Titan Technologies Terminal © 2026</div>
+                </footer>
+            </div>
+            `;
+        };
+
+        const renderRow = (l, v, lw = false, i = null, a = '') => `
+            <div class="flex justify-between items-center border-b border-white/[0.02] pb-5 last:border-0 last:pb-0">
+                <span class="text-[10px] font-bold text-slate-700 uppercase tracking-widest flex items-center gap-2">${i ? `<i data-lucide="${i}" class="w-3 h-3"></i>` : ''}${l}</span>
+                <span class="text-[13px] font-black text-white uppercase tracking-tight truncate max-w-[180px] ${lw ? 'lowercase' : ''} ${a}">${v}</span>
+            </div>
+        `;
+
+        const renderVariantBadge = (v, theme) => {
+            if (theme.label === 'GOLD') return `<div class="relative py-2 text-center w-full"><div class="absolute inset-0 bg-yellow-500/20 blur-2xl rounded-full animate-pulse"></div><span style="text-shadow: ${theme.textShadow}" class="cursive-gold text-5xl font-bold text-yellow-400 tracking-tighter relative z-10 italic">GOLD</span></div>`;
+            if (theme.label === 'PLATINUM') return `<div class="relative py-3 px-10 rounded-3xl border border-white/20 bg-white/5 overflow-hidden animate-shimmer"><span style="text-shadow: ${theme.textShadow}" class="text-3xl font-black text-white tracking-[0.3em] relative z-10 italic uppercase">PLATINUM</span></div>`;
+            if (theme.label === 'SILVER') return `<div class="relative py-2 px-6"><div class="absolute inset-0 bg-slate-400/10 blur-xl rounded-full animate-pulse"></div><span class="text-3xl font-black italic tracking-widest relative z-10 glow-silver">SILVER</span></div>`;
+            return `<div class="relative py-2 px-6"><div class="absolute inset-0 ${theme.bgGlow} blur-xl rounded-full animate-pulse"></div><span style="text-shadow: ${theme.textShadow}" class="text-3xl font-black italic tracking-widest relative z-10 ${theme.accent}">${theme.label}</span></div>`;
+        };
+
+        const renderSmallLogo = (v) => {
+            const up = v.toUpperCase();
+            if (up.includes("VISA")) return `<span class="text-2xl font-black italic glow-visa tracking-tighter inline-block pr-2">VISA</span>`;
+            if (up.includes("MASTERCARD")) return `<div class="flex -space-x-2 glow-mastercard"><div class="w-6 h-6 bg-red-600 rounded-full border border-white/10 shadow-lg"></div><div class="w-6 h-6 bg-yellow-500 rounded-full border border-white/10 shadow-lg"></div></div>`;
+            if (up.includes("RUPAY")) return `<span class="text-2xl font-black italic bg-gradient-to-r from-blue-400 to-orange-400 bg-clip-text text-transparent glow-rupay tracking-tighter inline-block pr-3">RuPay</span>`;
+            return `<i data-lucide="credit-card" class="w-5 h-5 text-white/20"></i>`;
+        };
+
+        const fetchData = async (retry = 0, silent = false) => {
+            if (!silent) document.getElementById('initial-loader').style.display = 'flex';
+            isSyncingData = true;
+            try {
+                const res = await fetch(API_URL);
+                const json = await res.json();
+                const rows = Array.isArray(json) ? json : (json.data || []);
+                
+                // DATA MAPPING ALIGNED WITH TITAN SUPREME V16.0 HEADERS
+                allData = rows.slice(1).map(r => ({
+                    custId: String(r[0] || ""),
+                    accNo: String(r[1] || ""),
+                    name: String(r[2] || "UNNAMED"),
+                    gender: String(r[3] || ""),
+                    aadhaar: String(r[4] || ""),
+                    nominee: String(r[5] || ""),
+                    pan: String(r[6] || ""),
+                    joint: String(r[7] || ""),
+                    openingBalance: r[8],
+                    variant: String(r[9] || "NORMAL"),
+                    accType: String(r[10] || "SAVINGS"),
+                    card: String(r[11] || "BASIC"),
+                    dob: formatDateOnly(String(r[12] || "")),
+                    age: String(r[13] || ""),
+                    mobile: String(r[14] || ""),
+                    email: String(r[15] || ""),
+                    penalCharge: r[16] || 0,
+                    currentBalance: r[17],
+                    status: String(r[18] || "ACTIVE").toUpperCase(),
+                    remarks: String(r[19] || "VALIDATED")
+                }));
+
+                if (selectedAccount) {
+                    const fresh = allData.find(i => i.custId === selectedAccount.custId);
+                    if (fresh) {
+                        if (fresh.status === 'INACTIVE') { selectedAccount = null; currentView = 'search'; renderApp(); showError("ACCOUNT NOT FOUND ERROR 303 CONTACT ADMIN"); }
+                        else { selectedAccount = fresh; }
+                    }
+                }
+                renderApp();
+            } catch (e) { console.error(e); } 
+            finally { document.getElementById('initial-loader').style.display = 'none'; isSyncingData = false; updateDashboardUI(); }
+        };
+
+        const handleTrack = () => {
+            const val = document.getElementById('search-input').value.trim().toUpperCase();
+            if (!val) return;
+            const match = allData.find(i => i.mobile.toUpperCase() === val || i.custId.toUpperCase() === val || i.accNo.toUpperCase() === val);
+            if (match) {
+                if (match.status === 'INACTIVE') { showError("ACCOUNT NOT FOUND ERROR 303 CONTACT ADMIN"); }
+                else { selectedAccount = match; currentView = 'dashboard'; renderApp(); }
+            } else { showError("IDENTITY ERROR: Record not found."); }
+        };
+
+        const showError = (msg) => {
+            const b = document.getElementById('error-box');
+            const t = document.getElementById('error-message');
+            if (b) { t.innerText = msg; b.classList.remove('hidden'); setTimeout(() => b.classList.add('hidden'), 5000); }
+        };
+
+        const logout = () => { selectedAccount = null; currentView = 'search'; renderApp(); };
+        window.onload = () => { fetchData(); setInterval(() => fetchData(0, true), 5000); };
+    </script>
+</body>
+</html>

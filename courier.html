@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Courier Booking Portal | SmartLocal</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-orbs">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+</div>
+
+<nav class="navbar navbar-expand-lg navbar-dark">
+  <div class="container-fluid">
+    <div class="logo">Smart<span>Local</span></div>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="admin.html">Admin</a></li>
+        <li class="nav-item"><a class="nav-link" href="business-register.html">Register Business</a></li>
+        <li class="nav-item"><a class="nav-link" href="courier.html">Courier</a></li>
+        <li class="nav-item"><a class="nav-link" href="menu.html">Menu</a></li>
+        <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+      </ul>
+      <button class="btn btn-outline-light" onclick="window.location.href='admin.html'">Admin Panel ↗</button>
+    </div>
+  </div>
+</nav>
+
+<section id="courier-hero" class="section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">✦ Courier Portal</div>
+      <h2 class="section-title gradient-text">Book Courier Pickup with Auto AWB</h2>
+      <p class="section-desc">Create fast courier orders with BlueDart / India Post style auto-generated AWB numbers. Pick up is instantly available and stored in the admin dashboard.</p>
+    </div>
+    <div class="hero-grid">
+      <div class="hero-card">
+        <h3>Courier Booking Form</h3>
+        <form id="courier-portal-form" class="professional-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="courier-sender-name">Sender Name</label>
+              <input type="text" id="courier-sender-name" placeholder="Your name" required />
+            </div>
+            <div class="form-group">
+              <label for="courier-sender-phone">Sender Phone</label>
+              <input type="tel" id="courier-sender-phone" placeholder="Phone number" required />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="courier-origin-pincode">Pickup PIN Code</label>
+              <input type="text" id="courier-origin-pincode" placeholder="Pickup PIN" required />
+            </div>
+            <div class="form-group">
+              <label for="courier-destination-pincode">Delivery PIN Code</label>
+              <input type="text" id="courier-destination-pincode" placeholder="Delivery PIN" required />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="courier-provider">Courier Provider</label>
+              <select id="courier-provider" required>
+                <option value="bluedart">BlueDart</option>
+                <option value="indiapost">India Post</option>
+                <option value="delhivery">Delhivery</option>
+                <option value="smartlocal">SmartLocal Express</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="courier-service-type">Service Type</label>
+              <select id="courier-service-type" required>
+                <option value="standard">Standard</option>
+                <option value="express">Express</option>
+                <option value="same-day">Same Day</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="courier-weight">Package Weight (kg)</label>
+              <input type="number" id="courier-weight" placeholder="0.5" min="0.1" step="0.1" required />
+            </div>
+            <div class="form-group">
+              <label for="courier-value">Declared Value (₹)</label>
+              <input type="number" id="courier-value" placeholder="Amount" min="0" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="courier-description">Package Description</label>
+            <textarea id="courier-description" placeholder="Describe the package content..." rows="3"></textarea>
+          </div>
+          <button type="submit" class="courier-book-btn">
+            <span class="courier-book-btn-icon">🚀</span>
+            <span>Generate AWB & Book Pickup</span>
+          </button>
+          <div class="courier-cta-note">Instant AWB creation, pickup scheduling, and dashboard sync in one professional workflow.</div>
+        </form>
+      </div>
+      <div class="hero-card courier-summary-card">
+        <h3>Booking Summary</h3>
+        <div id="courier-portal-result" class="courier-output">
+          <p>Fill the form to auto-generate your AWB and confirm pickup.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="courier-steps mt-4">
+      <h4>Tracking Steps</h4>
+      <div class="steps-container">
+        <div class="step-item">
+          <div class="step-icon">📦</div>
+          <div class="step-content">
+            <h5>Picked Up</h5>
+            <p>Date & Time: <span id="pickup-date">Not yet</span></p>
+            <p>Deliver to: <span id="pickup-by">Courier Partner</span></p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-icon">🚚</div>
+          <div class="step-content">
+            <h5>In Transit</h5>
+            <p>Date & Time: <span id="transit-date">Not yet</span></p>
+            <p>Deliver to: <span id="transit-by">Courier Partner</span></p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-icon">✅</div>
+          <div class="step-content">
+            <h5>Delivered</h5>
+            <p>Date & Time: <span id="delivered-date">Not yet</span></p>
+            <p>Deliver to: <span id="delivered-by">Recipient</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <span class="logo">Smart<span>Local</span></span>
+      <p class="footer-desc">Your courier orders are now managed alongside business operations. One platform, one workflow.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <a href="admin.html">Admin</a>
+      <a href="business-register.html">Register Business</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <a href="#">Help Center</a>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 SmartLocal. Courier portal powered by local storage and AWB automation.</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
