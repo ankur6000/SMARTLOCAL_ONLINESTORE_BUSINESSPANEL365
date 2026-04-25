@@ -31,7 +31,15 @@ SMARTLOCAL ONLINE STORE BUSINESS PANEL 365 is a full-stack web platform that ena
 - 🏪 Business Dashboard  
 - ⚡ Automation System  
 - 🗄️ MongoDB Integration  
-- 🌐 Responsive UI  
+- 🌐 Responsive UI
+- 📊 Real Time AI DETECTION Fraud WITH LLM2.O
+- 🛡 Shield With Security Https//: And Easy Encryption
+- 🚌 Easy Automated Tracking System 
+- ⏰️ Easy and Hassel Free Auto Dispatch
+- 🗨 Integrated With Robert 6.O
+- 🏦 Easy Registration Through AI
+- 💰 All Current Rates Of Metals Like Golf Silver Platinum In One Pannel
+- 📢 Automated Notification Punched In Pannel
 
 ---
 
@@ -165,5 +173,5 @@ If you like this project, give it a ⭐
 ---
 
 <p align="center">
-  ❤️ Built with passion for real-world business solutions
+  ✅️ Built with passion for real-world business solutions
 </p>
