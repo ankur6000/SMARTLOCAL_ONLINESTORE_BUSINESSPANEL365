@@ -40,6 +40,15 @@ SMARTLOCAL ONLINE STORE BUSINESS PANEL 365 is a full-stack web platform that ena
 - 🏦 Easy Registration Through AI
 - 💰 All Current Rates Of Metals Like Golf Silver Platinum In One Pannel
 - 📢 Automated Notification Punched In Pannel
+- 💬 Easy And Automatted Message System
+- 🎫 Easy Ticket Booking Automation
+- 🫆 Easy Biometric Authentication
+- 🤖 ROBERT ACTIVE 24*7 FOR GOLD AND PLATINUM TIER ONLY
+- 🗣 Easy Voice Telling System Installed
+- ✨️ Algorithm Added With Self Trained Robert Features
+- ✅️ Integrated Backup Data
+- 📁 All Files Are Secured Locally And In Database 9.6 
+
 
 ---
 
