@@ -172,9 +172,9 @@ Start Command: npm start
 ---
 
 ## 👨‍💻 AUTHOR
-**ANKUR UPADHYAY**
-**AYUSH GUSAIN**
-**VINAYAK URWAR**
+**ANKUR UPADHYAY** |
+**AYUSH GUSAIN** |
+**VINAYAK URWAR** |
 
 ---
 
